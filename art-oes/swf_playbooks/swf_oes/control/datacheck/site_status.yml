@@ -1,0 +1,32 @@
+---
+
+- block:
+#  - name: slave create fetch data files flag
+#    file:
+#      path: "{{ slave_path_oes_home_data_flags }}/{{ data_check_ok_writing }}"
+#      state: touch
+
+  - name: write into file remark
+    raw: "echo -e '{{ diff_check_file }}' > {{ slave_path_oes_home_data_flags }}/{{ data_check_ok_writing }}"
+
+  - name: mv name
+    command: "mv {{ data_check_ok_writing }} {{ data_check_ok }}"
+    args:
+      chdir: "{{ slave_path_oes_home_data_flags }}"
+  when: success_status is not skipped
+
+- name: touch datacheck success
+  file:
+    path: "{{ ansible_flag }}/{{ flag_success }}"
+    state: touch
+  when: success_status is not skipped
+  delegate_to: 127.0.0.1
+  run_once: true
+
+- name: touch datacheck retry
+  file:
+    path: "{{ ansible_flag }}/{{ flag_failed }}"
+    state: touch
+  when: success_status is skipped
+  delegate_to: 127.0.0.1
+  run_once: true

@@ -1,0 +1,9 @@
+---
+- name: mds reset
+  command: ./mds reset -Y -F
+  args:
+    chdir: "{{ slave_path_mds_home_bin }}"
+  register: reset_res
+  ignore_errors: True
+
+

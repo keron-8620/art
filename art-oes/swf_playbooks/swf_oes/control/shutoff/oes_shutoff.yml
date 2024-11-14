@@ -1,0 +1,9 @@
+---
+- name: oes shutoff
+  command: "{{ cmd }}"
+  args:
+    chdir: "{{ slave_path_oes_home_bin }}"
+  register: shutoff_res
+  ignore_errors: True
+
+

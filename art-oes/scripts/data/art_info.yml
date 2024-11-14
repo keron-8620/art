@@ -1,0 +1,123 @@
+version_info:
+    "name": "art"
+    "version": "0.16.0.3.45-release"
+    "update_time": "20240802"
+    "config_file": "automatic.yml"
+    "ansible_config_file": 'ansible.cfg'
+    "rely_on_python3": "/usr/local/bin/python3.6"
+    "rely_on_ansible": "ansible 2.5+"
+
+#help_info:
+#    art:
+#        cmd: "sh cmd/art.sh"
+#        description: "自动化运行工具(状态， 版本查看) "
+#        params:
+#            - "-v    --version      查看版本信息"
+#            - "-t    --status       获取执行状态"
+#            - "-h    --help         获取帮助"
+#    dep:
+#        cmd: "sh cmd/dep.sh"
+#        description: "分发系统压缩包及对应文件"
+#        params:
+#            - "-h    --help         获取帮助"
+#    install:
+#        cmd: "sh cmd/install.sh"
+#        description: "安装目标主机上依赖和Python3"
+#        params:
+#            - "-h    --help         获取帮助"
+#    configure:
+#        cmd: "sh cmd/configure.sh"
+#        description: "根据自动化配置生成对应配置文件 "
+#        params:
+#            - "-h    --help         获取帮助"
+#    init:
+#        cmd: "sh cmd/init.sh"
+#        description: "注册必要的定时任务"
+#        params:
+#            - "-h    --help         获取帮助"
+#    mon_collector:
+#        cmd: "sh cmd/mon.sh"
+#        description: "获取客户信息"
+#        params:
+#            - "-t    --status       获取执行状态"
+#            - "-h    --help         获取帮助"
+#    csdc_collector:
+#        cmd: "sh cmd/csdc.sh"
+#        description: "获取中登数据 "
+#        params:
+#            - "-t    --status       获取执行状态"
+#            - "-h    --help         获取帮助"
+#    sse_collector:
+#        cmd: "sh cmd/sse.sh"
+#        description: "获取上海文件数据 "
+#        params:
+#            - "-t    --status       获取执行状态"
+#            - "-h    --help         获取帮助"
+#    szse_collector:
+#        cmd: "sh cmd/szse.sh"
+#        description: "获取深圳文件数据 "
+#        params:
+#            - "-t    --status       获取执行状态"
+#            - "-h    --help         获取帮助"
+#    counter_collector:
+#        cmd: "sh cmd/counter.sh"
+#        description: "获取数据 "
+#        params:
+#            - "-t    --status       获取执行状态"
+#            - "-h    --help         获取帮助"
+#    open:
+#        cmd: "sh cmd/open.sh"
+#        description: "执行开工 "
+#        params:
+#            - "-t    --status       获取执行状态"
+#            - "-h    --help         获取帮助"
+#    close:
+#        cmd: "sh cmd/close.sh"
+#        description: "执行收工 "
+#        params:
+#            - "-t    --status       获取执行状态"
+#            - "-h    --help         获取帮助"
+#    nakedstart:
+#        cmd: "sh cmd/nakedstart.sh"
+#        description: "裸启动 "
+#        params:
+#            - "-t    --status       获取执行状态"
+#            - "-h    --help         获取帮助"
+#    datacheck:
+#        cmd: "sh cmd/datacheck.sh"
+#        description: "检验文件是否一致 "
+#        params:
+#            - "-t    --status       获取执行状态"
+#            - "-h    --help         获取帮助"
+#    load:
+#        cmd: "sh cmd/load_data.sh"
+#        description: "加载数据 "
+#        params:
+#            - "-t    --status       获取执行状态"
+#            - "-h    --help         获取帮助"
+#    backup:
+#        cmd: "sh cmd/backup.sh"
+#        description: "备份数据 "
+#        params:
+#            - "-t    --status       获取执行状态"
+#            - "-h    --help         获取帮助"
+#    reset:
+#        cmd: "sh cmd/reset.sh"
+#        description: "重置交易系统"
+#        params:
+#            - "-t    --status       获取执行状态"
+#            - "-h    --help         获取帮助"
+#    shutoff:
+#        cmd: "sh cmd/shutoff.sh"
+#        description: "下线交易系统"
+#        params:
+#            - "-t    --status       获取执行状态"
+#            - "-h    --help         获取帮助"
+#    write_back:
+#        cmd: "sh cmd/write_back.sh"
+#        description: "回写数据 "
+#        params:
+#            - "-t    --status       获取执行状态"
+#            - "-h    --help         获取帮助"
+#
+

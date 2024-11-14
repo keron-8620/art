@@ -1,0 +1,94 @@
+---
+
+- name: site oes fetch conf running
+  command: "{{ running_cmd }}"
+  args:
+    chdir: "{{ slave_path_oes_home_bin }}"
+  when: set_oes_status
+  ignore_errors: True
+
+- name: remove OK flag file
+  file:
+    path: "{{ slave_path_oes_home_data_flags }}/{{ item }}"
+    state: absent
+  with_items:
+    - "{{ fetch_ok_flag }}"
+  ignore_errors: yes
+
+
+- name: archive all conf
+  archive:
+    path: "{{ gateway_path_root_conf }}"
+    dest: "{{ gateway_path_root_conf }}/conf_{{ curr_date }}.tar.gz"
+    remove: False
+  delegate_to: mon_host
+  run_once: yes
+  ignore_errors: True
+
+- name: fetch remote conf file
+  fetch:
+    src: "{{ gateway_path_root_conf }}/conf_{{ curr_date }}.tar.gz"
+    dest: "{{ ansible_path_files_conf }}/"
+    flat: yes
+  delegate_to: mon_host
+  run_once: yes
+  ignore_errors: yes
+
+- name: remove the conf tar-pkg
+  file:
+    path: "{{ gateway_path_root_conf }}/conf_{{ curr_date }}.tar.gz"
+    state: absent
+  delegate_to: mon_host
+  run_once: yes
+  ignore_errors: True
+#
+#- block:
+#  - name: get conf copy list
+#    find:
+#      paths: "{{ gateway_path_root_conf }}"
+#      get_checksum: yes
+#      file_type: file
+#      use_regex: yes
+#      patterns: "{{ conf_cp_files | map(attribute='name') | list }}"
+#    register: cp_files
+#
+#  - name: fetch remote conf file
+#    fetch:
+#      src: "{{ item.path }}"
+#      dest: "{{ ansible_path_files_conf }}/"
+#      flat: yes
+#    loop_control:
+#      label: "{{ item.path }}"
+#    with_items: "{{ cp_files.files }}"
+#
+#  delegate_to: "{{ mon_host }}"
+#  run_once: yes
+#  ignore_errors: yes
+
+
+#- name: scp remote mon file
+#  raw: "scp -r {{ mon_user }}@{{ mon_host}}:{{ gateway_path_root_mon }}/{{ item.name }} {{ ansible_path_files_mon }}"
+#  with_items: "{{ mon_cp_files }}"
+#  ignore_errors: yes
+#  delegate_to: 127.0.0.1
+#  run_once: true
+#  register: scp_mon_file_res
+
+#- name: merge mon copy list
+#  set_fact:
+#    cp_files_list: "{{ cp_files_list | default([]) + [gateway_path_root_mon + '/' + item.name] }}"
+#  with_items: "{{ mon_cp_files }}"
+#  ignore_errors: yes
+#  delegate_to: 127.0.0.1
+#  run_once: true
+#
+#- name: fetch remote_mon_file
+#  fetch:
+#    src: "{{ item }}"
+#    dest: "{{ ansible_path_files_mon }}/"
+#    flat: yes
+#  with_fileglob: "{{ cp_files_list }}"
+#  delegate_to: "{{ mon_host }}"
+#  run_once: yes
+#  ignore_errors: yes
+

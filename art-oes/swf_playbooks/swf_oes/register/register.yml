@@ -1,0 +1,33 @@
+
+
+- name: register all tasks
+  cron:
+    name: "{{ item.name }}--{{ swf_system_version }}-{{ set_num }}  {{ item.ch_name }}"
+    minute: "{{ item.start_minute }}"
+    hour: "{{ item.start_hour }}"
+    day: "*"
+    month: "*"
+    weekday: "1-5"
+    user: "{{ job_run_user }}"
+    job: "{{ item.action }} >> /dev/null"
+    state: present
+  when: item.enable
+  loop_control:
+    label: "{{ item.name }}"
+  with_items:
+    - "{{ cron_register_list }}"
+  delegate_to: 127.0.0.1
+  run_once: true
+
+- name: unregister the tasks which is not enable
+  cron:
+    name: "{{ item.name }}--{{ swf_system_version }}-{{ set_num }}  {{ item.ch_name }}"
+    user: "{{ job_run_user }}"
+    state: absent
+  when: not item.enable
+  loop_control:
+    label: "{{ item.name }}"
+  with_items:
+    - "{{ cron_register_list }}"
+  delegate_to: 127.0.0.1
+  run_once: true

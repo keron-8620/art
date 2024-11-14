@@ -1,0 +1,15 @@
+---
+cron_job_name: "{{ counter_distribute_name }}"
+cron_chinese_name: "{{ counter_distribute_ch_name }}"
+cron_job_start_hour: "{{ counter_distribute_start_hour }}"
+cron_job_start_minute: "{{counter_distribute_start_minute}}"
+cron_job_action: "{{ counter_distribute_action }}"
+
+running_cmd: "./oes taskstatus -k DATA_FETCH_COUNTER -S 2"
+success_cmd: "./oes taskstatus -k DATA_FETCH_COUNTER -S 5 -m ''"
+failed_cmd: "./oes taskstatus -k DATA_FETCH_COUNTER 4 -m '获取数据失败, {{cron_job_cycles}}分钟后尝试重新拉取数据'"
+timeout_cmd: "./oes taskstatus -k DATA_FETCH_COUNTER -S 4 -m '获取数据失败, 需人工干预'"
+
+task_end_time: "{{ counter_distribute_end_time }}"
+fetch_ok_flag: "{{ fetch_counter_ok }}"
+art_run_once: "{{ counter_distribute_run_once }}"

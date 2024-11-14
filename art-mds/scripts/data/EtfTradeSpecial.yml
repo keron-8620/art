@@ -1,0 +1,4 @@
+510050: 50__{{ curr_date[4:] }}.ETF
+510180: 180_{{ curr_date[4:] }}.ETF
+510880: HL__{{ curr_date[4:] }}.ETF
+510060: YQ50{{ curr_date[4:] }}.ETF

@@ -1,0 +1,9 @@
+---
+cron_job_name: "oes_close"
+cron_chinese_name: "交易系统收工"
+cron_job_start_hour: "{{ close_start_hour }}"
+cron_job_start_minute: "{{ close_start_minute }}"
+cron_job_action: 'cd {{ ansible_path_ansible_home }} && sh cmd/close.sh'
+
+
+

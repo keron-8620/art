@@ -1,0 +1,15 @@
+---
+
+
+- name: "unarchive conf_{{ curr_date }}.tar.gz"
+  unarchive:
+    src: "{{ ansible_path_files_conf }}/conf_{{ curr_date }}.tar.gz"
+    dest: "{{ slave_path_mds_home_conf }}/"
+  ignore_errors: True
+
+- name: "rename the dir to monitor"
+  command: "mv {{ gateway_path_root_conf.split('/')[-1] }} monitor"
+  args:
+    chdir: "{{ slave_path_mds_home_conf }}"
+  when: "gateway_path_root_conf.split('/')[-1] != 'monitor'"
+  ignore_errors: True

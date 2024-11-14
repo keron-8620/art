@@ -1,0 +1,8 @@
+---
+- name: init oes load job
+  raw: date +%H%M
+  notify:
+    - handler init cron job
+  delegate_to: 127.0.0.1
+  run_once: true
+

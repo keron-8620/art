@@ -1,0 +1,9 @@
+---
+cron_job_name: "oes_thaw"
+cron_chinese_name: "解冻柜台数据"
+cron_job_start_hour: "{{ cron_job_oes_thaw_time_hh }}"
+cron_job_start_minute: "{{ cron_job_oes_thaw_time_mm }}"
+cron_job_action: 'cd {{ ansible_path_ansible_home }} && sh cmd/thaw.sh'
+
+
+

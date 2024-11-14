@@ -1,0 +1,9 @@
+---
+cron_job_name: "oes_reset"
+cron_chinese_name: "交易系统状态重置"
+cron_job_start_hour: "{{ cron_job_oes_reset_time_hh }}"
+cron_job_start_minute: "{{ cron_job_oes_reset_time_mm }}"
+cron_job_action: 'cd {{ ansible_path_ansible_home }} && sh cmd/reset.sh'
+
+cmd: "./oes reset -Y -F"
+

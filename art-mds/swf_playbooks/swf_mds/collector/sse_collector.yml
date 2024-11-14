@@ -1,0 +1,30 @@
+---
+- hosts: all
+  vars_files:
+    - ../../../inventory/vars_files/common_vars.yml
+    - ./sse_gateway/sse_vars.yml
+    - ../../../automatic.yml
+
+  handlers:
+    - include: ../common/crontab_handlers.yml
+
+  tasks:
+    - include: ../common/get_time.yml
+
+    - include: ../common/before_playbook.yml
+
+    - block:
+      - include: ./sse_gateway/gateway_to_local.yml
+
+      - include: ./sse_gateway/local_to_mds.yml
+        when: check is success
+
+      - include: ./sse_gateway/sse_checker.yml
+
+      - include: ../common/set_status.yml
+
+      - include: ../common/colct_register.yml
+
+        when: disable_sse_collector == false
+
+    - include: ../common/after_playbook.yml

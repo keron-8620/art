@@ -1,0 +1,85 @@
+- name: curr hhmm
+  command: 'date +%H%M'
+  delegate_to: 127.0.0.1
+  register: curr_time_hhmm
+
+################## 命令直接设置oes 状态 ######################
+- name: "set {{ cron_job_name }} status success on {{ system }}"
+  command: "{{ success_cmd }}"
+  args:
+    chdir: "{{ slave_path_oes_home_bin }}"
+  when: check_result is success and set_oes_status and ansible_play_hosts == ansible_play_hosts_all
+  ignore_errors: true
+################# 命令直接设置oes 状态 ######################
+
+################# 目标主机创建成功标志 ######################
+- name: "create {{ cron_job_name }} flag .OK on the target host"
+  shell: "echo 'success' > {{ slave_path_oes_home_data_flags }}/{{ fetch_ok_flag }}"
+  when: check_result is success
+################# 目标主机创建成功标志 ######################
+
+######################## mon日志模块 ######################
+- name: "send success log to mon"
+  command: "{{ python3 }} mon_log.py -l bzinf -c '{{ cron_job_name }} success'"
+  args:
+    chdir: "{{ ansible_path_scripts_files }}"
+  when: check_result is success
+  delegate_to: 127.0.0.1
+  run_once: true
+  ignore_errors: yes
+
+- name: "send failed log to mon"
+  command: "{{ python3 }} mon_log.py -l bzwarn -c '{{ cron_job_name }} failed'"
+  args:
+    chdir: "{{ ansible_path_scripts_files }}"
+  when: check_result is failed
+  delegate_to: 127.0.0.1
+  run_once: true
+  ignore_errors: yes
+######################## 日志模块 ######################
+
+######################## 本地标志文件模块 ###############
+- name: "set {{ cron_job_name }} retry on {{ system }}"
+  command: "{{ failed_cmd }}"
+  args:
+    chdir: "{{ slave_path_oes_home_bin }}"
+  when: "(check_result is failed or \
+          ansible_play_hosts != ansible_play_hosts_all) and \
+          curr_time_hhmm.stdout.strip()|int < task_end_time|int and \
+          set_oes_status"
+  ignore_errors: true
+
+- name: "set {{ cron_job_name }} timeout on {{ system }}"
+  command: "{{ timeout_cmd }}"
+  args:
+    chdir: "{{ slave_path_oes_home_bin }}"
+  when: "(check_result is failed or \
+          ansible_play_hosts != ansible_play_hosts_all) and \
+          curr_time_hhmm.stdout.strip()|int >= task_end_time|int and \
+          set_oes_status"
+  ignore_errors: true
+
+- name: "create {{ cron_job_name }} flag .success on local host"
+  shell: "echo 'success' > {{ ansible_flag }}/{{ flag_success }}"
+  when: "check_result is success and \
+         ansible_play_hosts == ansible_play_hosts_all"
+  delegate_to: 127.0.0.1
+  run_once: true
+
+- name: "create {{ cron_job_name }} flag .retry on local host"
+  shell: "echo 'fail' > {{ ansible_flag }}/{{ flag_retry }}"
+  when: " (check_result is failed or
+           ansible_play_hosts != ansible_play_hosts_all) and \
+          curr_time_hhmm.stdout.strip()|int < task_end_time|int "
+  delegate_to: 127.0.0.1
+  run_once: true
+
+- name: "create {{ cron_job_name }} flag .timeout on local host"
+  shell: "echo 'timeout' > {{ ansible_flag }}/{{ flag_timeout }}"
+  when: " (check_result is failed or
+           ansible_play_hosts != ansible_play_hosts_all) and \
+          curr_time_hhmm.stdout.strip()|int >= task_end_time|int "
+  delegate_to: 127.0.0.1
+  run_once: true
+######################## 本地标志文件模块 ###############
+

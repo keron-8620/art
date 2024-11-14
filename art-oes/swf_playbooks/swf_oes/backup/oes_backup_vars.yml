@@ -1,0 +1,8 @@
+---
+cron_job_name: "{{ backup_name }}"
+cron_chinese_name: "{{ backup_ch_name }}"
+cron_job_start_minute: "{{ backup_time_mm }}"
+cron_job_start_hour: "{{ backup_time_hh }}"
+cron_job_action: "{{ backup_action }}"
+
+

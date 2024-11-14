@@ -1,0 +1,12 @@
+---
+- name: sleep 1s
+  pause:
+    seconds: 1
+
+- name: stop mds
+  command: ./mds stop -F
+  args:
+    chdir: "{{ slave_path_mds_home_bin }}"
+  ignore_errors: True
+
+

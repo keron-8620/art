@@ -1,0 +1,33 @@
+---
+
+- name: ensure TradingDate.txt absent
+  file:
+    path: "{{ ansible_path_files_mon }}/TradingDate.txt"
+    state: absent
+  delegate_to: 127.0.0.1
+  run_once: true
+
+- block:
+  - name: get mon copy list
+    find:
+      paths: "{{ gateway_path_root_mon }}"
+      get_checksum: yes
+      file_type: file
+      use_regex: yes
+      patterns: "{{ mon_cp_files_list | list }}"
+    register: cp_files
+
+  - name: fetch remote mon file
+    fetch:
+      src: "{{ item.path }}"
+      dest: "{{ ansible_path_files_mon }}/"
+      flat: yes
+    loop_control:
+      label: "{{ item.path }}"
+    with_items: "{{ cp_files.files }}"
+
+  delegate_to: mon_host
+  run_once: yes
+  ignore_errors: yes
+
+

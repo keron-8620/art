@@ -1,0 +1,16 @@
+---
+- name: touch stop success
+  file:
+    path: "{{ ansible_flag }}/{{ flag_success }}"
+    state: touch
+  when: stop_res is success and ansible_play_hosts == ansible_play_hosts_all
+  delegate_to: 127.0.0.1
+  run_once: yes
+
+- name: touch stop retry
+  file:
+    path: "{{ ansible_flag }}/{{ flag_failed }}"
+    state: touch
+  when: stop_res is not success or ansible_play_hosts != ansible_play_hosts_all
+  delegate_to: 127.0.0.1
+  run_once: yes

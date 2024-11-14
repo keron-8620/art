@@ -1,0 +1,8 @@
+---
+cron_job_name: "oes_nakedstart"
+cron_chinese_name: "交易系统裸启动"
+cron_job_start_hour: "{{ nakedstart_start_hour }}"
+cron_job_start_minute: "{{ nakedstart_start_minute }}"
+cron_job_action: 'cd {{ ansible_path_ansible_home }} && sh cmd/nakedstart.sh'
+
+cmd: "./oes st -B"

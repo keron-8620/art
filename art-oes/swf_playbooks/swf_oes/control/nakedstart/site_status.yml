@@ -1,0 +1,16 @@
+---
+- name: touch nakedstart success
+  file:
+    path: "{{ ansible_flag }}/{{ flag_success }}"
+    state: touch
+  when: naked_start_master is success and ansible_play_hosts == ansible_play_hosts_all
+  delegate_to: 127.0.0.1
+  run_once: true
+
+- name: touch nakedstart failed
+  file:
+    path: "{{ ansible_flag }}/{{ flag_failed }}"
+    state: touch
+  when: naked_start_master is failed or ansible_play_hosts != ansible_play_hosts_all
+  delegate_to: 127.0.0.1
+  run_once: true

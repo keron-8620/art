@@ -1,0 +1,111 @@
+---
+- hosts: all
+  remote_user: root
+  sudo: yes
+  vars:
+    software_file_src_os: "{{ ansible_path_ansible_home }}/files/os/software"
+    software_file_dist_os: "/root/software"
+  vars_files:
+    - ../../../automatic.yml
+
+  tasks:
+    - name: install need software
+      debug:
+        msg: "{{ software_file_src_os }}"
+
+    - name: create need home directory
+      file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+#        - "/usr/lib/oracle/"
+        - "{{ software_file_dist_os }}"
+      ignore_errors: True
+
+    - name: copy software files
+      copy:
+        src: "{{ item }}"
+        dest: "{{ software_file_dist_os }}"
+        mode: 0644
+
+      with_fileglob:
+        - "{{ software_file_src_os }}/libaio-0.3.109-13.el7.i686.rpm"
+        - "{{ software_file_src_os }}/zlib-devel-1.2.7-17.el7.x86_64.rpm"
+        - "{{ software_file_src_os }}/zlib-1.2.7-17.el7.x86_64.rpm"
+        - "{{ software_file_src_os }}/sqlite-devel-3.7.17-8.el7.x86_64.rpm"
+        - "{{ software_file_src_os }}/sqlite-3.7.17-8.el7.x86_64.rpm"
+        - "{{ software_file_src_os }}/Python-3.6.5.tgz"
+        - "{{ software_file_src_os }}/setuptools-40.4.3-py2.py3-none-any.whl"
+        - "{{ software_file_src_os }}/SQLAlchemy-1.2.8.tar.gz"
+      register: install_result
+      ignore_errors: True
+
+    - name: install libaio software
+      yum:
+        name: "{{ software_file_dist_os }}/libaio-0.3.109-13.el7.i686.rpm"
+        state: present
+      register: zib_install_result
+      ignore_errors: True
+
+    - name: install zlib software
+      yum:
+        name: "{{ software_file_dist_os }}/zlib-1.2.7-17.el7.x86_64.rpm"
+        state: present
+      register: zib_install_result
+      ignore_errors: True
+
+    - name: install zlib-devel software
+      yum:
+        name: "{{ software_file_dist_os }}/zlib-devel-1.2.7-17.el7.x86_64.rpm"
+        state: present
+      register: zib_install_result
+      ignore_errors: True
+
+    - name: install sqlite software
+      yum:
+        name: "{{ software_file_dist_os }}/sqlite-3.7.17-8.el7.x86_64.rpm"
+        state: present
+      register: sqlite_install_result
+      ignore_errors: True
+
+    - name: install sqlite-devel software
+      yum:
+        name: "{{ software_file_dist_os }}/sqlite-devel-3.7.17-8.el7.x86_64.rpm"
+        state: present
+      register: sqlite_install_result
+      ignore_errors: True
+
+    - name: install Python3 software
+      shell: "cd {{ software_file_dist_os }} && tar -xzvf Python-3.6.5.tgz && cd Python-3.6.5 && ./configure && make && make install"
+      args:
+        executable: /usr/bin/bash
+      register: python3_install_result
+      ignore_errors: True
+
+    - name: link py3 and pip3
+      command: "ln -s /usr/local/bin/{{ item }} /usr/bin/{{ item }}"
+      args:
+        creates: "/usr/bin/{{ item }}"
+      with_items:
+        - "python3"
+        - "pip3"
+
+    - name: install setuptools software
+      command: pip3 install setuptools-40.4.3-py2.py3-none-any.whl
+      args:
+        chdir: "{{ software_file_dist_os }}"
+      register: setuptools_install_result
+      ignore_errors: True
+
+    - name: install SQLAlchemy-1.2.8 software
+      command: pip3 install SQLAlchemy-1.2.8.tar.gz
+      args:
+        chdir: "{{ software_file_dist_os }}"
+      register: SQLAlchemy-1.2.8_install_result
+      ignore_errors: True
+
+    - name: delete packages
+      file:
+        path: "{{ software_file_dist_os }}"
+        state: absent
+      ignore_errors: True

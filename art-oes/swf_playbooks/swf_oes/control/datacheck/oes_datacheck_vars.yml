@@ -1,0 +1,9 @@
+---
+- cron_job_name: "{{ datacheck_name }}"
+- cron_chinese_name: "{{ datacheck_ch_name }}"
+- cron_job_start_hour: "{{ datacheck_start_hour }}"
+- cron_job_start_minute: "{{ datacheck_start_minute }}"
+- cron_job_action: "{{ datacheck_action }}"
+
+
+

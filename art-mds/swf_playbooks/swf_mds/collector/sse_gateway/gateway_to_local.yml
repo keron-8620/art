@@ -1,0 +1,43 @@
+---
+- name: get gzlx month
+  raw: echo "obase=16;{{ curr_date[4:6] }}"|bc|tr '[A-Z]' '[a-z]'
+  delegate_to: 127.0.0.1
+  run_once: true
+  register: gzlx_mm
+
+- name: clear sse directory
+  shell: "cd {{ ansible_path_files_sse }} && rm -rf *"
+  delegate_to: 127.0.0.1
+  run_once: true
+
+- block:
+  - name: fetch remote sse file
+    command: python3 run_command.py "rsync -az --no-r -e 'ssh -p {{ ssh_port }}' {{ sse_user }}@{{ sse_host }}:{{ gateway_path_root_sse }}/{{ item }} {{ ansible_path_files_sse }}/"
+    args:
+      chdir: "{{ ansible_path_scripts_files }}"
+    with_items: "{{ sse_cp_files_list }}"
+    ignore_errors: yes
+
+  - name: check remote sse file
+    command: "{{ python3 }} check_md5.py -t sse -s {{ ansible_path_files_sse }} -d {{ gateway_path_root_sse }}"
+    args:
+      chdir: "{{ ansible_path_scripts_files }}"
+    ignore_errors: yes
+    register: check
+
+  - name: unzip sse files ready
+    command: "{{ python3 }} unzip_sse_files.py {{ ansible_path_files_sse }}"
+    args:
+      chdir: "{{ ansible_path_scripts_files }}"
+  delegate_to: 127.0.0.1
+  run_once: yes
+
+- debug:
+    msg: "文件完整性验证通过{{ check }}"
+  when: "check is success"
+  run_once: yes
+
+- debug:
+    msg: "文件完整性验证失败{{ check }}"
+  when: "check is failed"
+  run_once: yes

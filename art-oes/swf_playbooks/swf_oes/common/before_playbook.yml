@@ -1,0 +1,34 @@
+---
+- name: rm success or failed flag
+  file:
+    path: "{{ ansible_flag }}/{{ item }}"
+    state: absent
+  with_items:
+    - "{{ flag_success }}"
+    - "{{ flag_failed }}"
+    - "{{ flag_retry }}"
+    - "{{ flag_running }}"
+    - "{{ flag_timeout }}"
+    - "{{ flag_error }}"
+  delegate_to: 127.0.0.1
+  run_once: true
+
+- name: touch running flag
+  file:
+    path: "{{ ansible_flag }}/{{ flag_running }}"
+    state: touch
+  delegate_to: 127.0.0.1
+  run_once: yes
+
+- name: "set oes {{ cron_job_name }} running"
+  command: "{{ running_cmd }}"
+  args:
+    chdir: "{{ slave_path_oes_home_bin }}"
+  when: set_oes_status
+  ignore_errors: True
+
+- name: remove OK flag file
+  file:
+    path: "{{ slave_path_oes_home_data_flags }}/{{ fetch_ok_flag }}"
+    state: absent
+  ignore_errors: yes

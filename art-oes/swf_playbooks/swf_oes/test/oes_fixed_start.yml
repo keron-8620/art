@@ -1,0 +1,12 @@
+---
+- hosts: all
+  vars_files:
+    - ../../../inventory/vars_files/common_vars.yml
+    - ../../../automatic.yml
+
+  tasks:
+    - name: fixed_start_oes
+      command: ./oes st
+      args:
+        chdir: "{{ slave_path_oes_home_bin }}"
+      ignore_errors: yes

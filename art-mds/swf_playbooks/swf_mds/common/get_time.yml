@@ -1,0 +1,25 @@
+---
+- block:
+  - name: print curr_date
+    debug:
+      msg: "{{ curr_date }}"
+
+  - name: print next_trd_date
+    debug:
+      msg: "{{ next_trd_date }}"
+
+  - name: print pre_trd_date
+    debug:
+      msg: "{{ pre_trd_date }}"
+
+  - name: get curr hhmm
+    command: 'date +%H%M'
+    register: curr_time_hhmm
+
+  - name: get  next hhmm
+    command: 'date +%H%M -d "{{ cron_job_cycles }} minutes"'
+    register: next_time_hhmm
+
+  delegate_to: 127.0.0.1
+  run_once: true
+

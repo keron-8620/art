@@ -1,0 +1,9 @@
+---
+- name: oes reset
+  command: "{{ cmd }}"
+  args:
+    chdir: "{{ slave_path_oes_home_bin }}"
+  register: reset_res
+  ignore_errors: True
+
+

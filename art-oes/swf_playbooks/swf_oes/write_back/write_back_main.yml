@@ -1,0 +1,27 @@
+---
+- hosts: all
+  vars_files:
+    - ../../../inventory/vars_files/common_vars.yml
+    - ./write_back_vars.yml
+    - ../../../automatic.yml
+
+  handlers:
+    - include: ../common/crontab_handlers.yml
+
+  tasks:
+    - include: ../common/get_time.yml
+
+    - include: ../common/before_playbook.yml
+
+    - block:
+
+      - include: ./write_back.yml
+      when: not disable_oes_write_back
+
+    - include: ../common/after_playbook.yml
+
+
+
+
+
+

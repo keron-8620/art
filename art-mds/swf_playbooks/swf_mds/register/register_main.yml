@@ -1,0 +1,9 @@
+---
+- hosts: all
+  vars_files:
+    - ../../../inventory/vars_files/common_vars.yml
+    - ../../../automatic.yml
+
+  tasks:
+
+    - include: ./register.yml

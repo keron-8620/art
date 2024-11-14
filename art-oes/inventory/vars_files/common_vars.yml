@@ -1,0 +1,379 @@
+########################## const vars #############################
+cron_job_cycles: 5
+python3: /usr/local/bin/python3                        # python3 执行程序目录
+oesuser: "{{ ansible_ssh_user }}"
+###################################################################
+
+
+########################### system name ###########################
+swf_system_version: "{{ system }}-{{ version }}"
+swf_system_version_counter: "{{ swf_system_version }}-{{ counter }}"
+###################################################################
+
+######################## gateway 相关目录 ##########################
+# 上场数据导出文件夹 暂时没有这个需求,所以特殊处理导出至logs
+gateway_path_export_root: "{{ ansible_path_files_counter_logs }}"
+# 上场数据导出文件夹 第一批数据 1
+gateway_path_export_root_1: "{{ ansible_path_files_counter_logs }}"
+# 上场数据导出文件夹 第二批数据 2
+gateway_path_export_root_2: "{{ ansible_path_files_counter_logs }}"
+###################################################################
+
+#################ansible工作目录相关文件位置##########################
+ansible_path_backup: "{{ ansible_path_ansible_home }}/backup"
+ansible_path_files: "{{ ansible_path_ansible_home }}/files"
+ansible_path_tmp: "{{ ansible_path_ansible_home }}/.tmp"
+ansible_path_files_bin: "{{ ansible_path_files }}/bin"
+ansible_path_files_config: "{{ ansible_path_files }}/config"
+ansible_path_files_config_spec: "{{ ansible_path_files_config }}/{{ se }}/{{ spec_config_file_dir }}"
+ansible_path_files_config_all: "{{ ansible_path_files_config }}/{{ se }}/all"
+
+ansible_path_oes_bin_file: "{{ ansible_path_files_bin }}/{{ oes_tarpkgs_name }}"
+ansible_path_xcounter_file: "{{ ansible_path_files_bin }}/{{ xcter_tarpkg_name }}"
+
+# mon 文件目录
+ansible_path_files_mon: "{{ ansible_path_files }}/mon"
+# conf 目录：
+ansible_path_files_conf: "{{ ansible_path_files }}/conf"
+
+# 获取柜台数据相关目录
+ansible_path_files_counter: "{{ ansible_path_files }}/counter"
+ansible_path_files_counter_default: "{{ ansible_path_files_counter }}/default"
+ansible_path_files_counter_conf: "{{ ansible_path_files_counter }}/conf"
+ansible_path_files_counter_logs: "{{ ansible_path_files_counter }}/logs"
+ansible_path_files_counter_data: "{{ ansible_path_files_counter }}/data"
+ansible_path_files_counter_bin: "{{ ansible_path_files_counter }}/bin"
+ansible_path_files_counter_bin_script: "{{ ansible_path_files_counter }}/bin/script"
+ansible_path_files_counter_bin_lib: "{{ ansible_path_files_counter }}/bin/lib"
+ansible_path_files_counter_data_broker: "{{ ansible_path_files_counter }}/data/broker"
+ansible_path_files_counter_data_exchange: "{{ ansible_path_files_counter }}/data/exchange"
+ansible_path_files_counter_bin_script_app_home_counter_files: "{{ ansible_path_files_counter_bin_script }}/app_home/counter_files"
+
+# 产品文件本地目录
+ansible_path_files_exchange: "{{ ansible_path_files }}/exchange"
+ansible_path_files_exchange_sse: "{{ ansible_path_files_exchange }}/sse"
+ansible_path_files_exchange_szse: "{{ ansible_path_files_exchange }}/szse"
+ansible_path_files_exchange_sse_etf: "{{ ansible_path_files_exchange }}/sse_etf"
+ansible_path_files_exchange_szse_etf: "{{ ansible_path_files_exchange }}/szse_etf"
+ansible_path_scripts_files: "{{ ansible_path_ansible_home }}/scripts"
+# 清算文件目录
+ansible_path_files_csdc: "{{ ansible_path_files }}/csdc"
+# 日志文件目录
+ansible_path_files_logs: "{{ ansible_path_ansible_home }}/logs"
+# 其他
+ansible_path_files_backup: "{{ ansible_path_files }}/backup"
+ansible_flag: "{{ ansible_path_ansible_home }}/flag"
+ansible_error_flag: "False"
+#################ansible工作目录相关文件位置##########################
+
+#################被控机相关目录######################################
+slave_path_oes_home: "{{ slave_path_user_home }}/{{ oes_pkg_name }}"
+slave_path_oes_home_art: "{{ slave_path_oes_home }}/art"
+slave_path_oes_home_bin: "{{ slave_path_oes_home }}/bin"
+slave_path_oes_home_sbin: "{{ slave_path_oes_home }}/sbin"
+slave_path_oes_home_conf: "{{ slave_path_oes_home }}/conf"
+slave_path_oes_home_data: "{{ slave_path_oes_home }}/data"
+slave_path_oes_home_txlog: "{{ slave_path_oes_home }}/txlog"
+slave_path_oes_home_logs: "{{ slave_path_oes_home }}/logs"
+slave_path_oes_home_bin_lib: "{{ slave_path_oes_home }}/bin/lib"
+slave_path_oes_home_bin_script: "{{ slave_path_oes_home }}/bin/script"
+slave_path_oes_home_data_broker: "{{ slave_path_oes_home_data }}/broker"
+slave_path_oes_home_data_exchange: "{{ slave_path_oes_home_data }}/exchange"
+slave_path_oes_home_data_monitor: "{{ slave_path_oes_home_data }}/monitor"
+slave_path_oes_home_data_csdc: "{{ slave_path_oes_home_data_exchange }}"
+slave_path_oes_home_data_flags: "{{ slave_path_oes_home_data }}/flags"
+slave_path_oes_home_data_exchange_sse_etf: "{{ slave_path_oes_home_data }}/exchange/sse_etf"
+slave_path_oes_home_data_exchange_szse_etf: "{{ slave_path_oes_home_data }}/exchange/szse_etf"
+#################被控机相关目录#######################################
+
+############ oes 主 备 仲裁 的主机配置和mon的配置#######################
+oes_master_hostname: "swf-oes-{{ broker }}-{{ taget }}-{{ master_host }}"
+oes_follow_hostname: "swf-oes-{{ broker }}-{{ taget }}-{{ follow_host }}"
+oes_arbiter_hostname: "swf-oes-{{ broker }}-{{ taget }}-{{ arbiter_host }}"
+#mon_file_host: "swf-oes-{{ broker }}-{{ taget }}-{{ mon_host }}"
+####################################################################
+
+#################柜台相关配置文件#####################################
+default_counter_files: ['BranchInfo.csv']
+default_counter_files2: ['PrivateFundBlacklist.csv', 'PrivateFundInfo.csv', 'PrivateFundTradeAccounts.csv']
+py_script_main: 'xcounter2oes_main.py'
+####################################################################
+
+#####################################################################
+
+################################ csdc配置 ###########################
+csdc_ftp_path: "ftp://{{ csdc_ftp_username }}:{{ csdc_ftp_password }}@{{ csdc_ftp_addr }}/{{ csdc_ftp_root }}"
+#####################################################################
+
+########################## 柜台相关配置文件 #########################
+# 一致性标志文件
+consistentcy_success: "DiffCashAsset{{ curr_date[4:] }}.success"
+consistentcy_failed: "DiffCashAsset{{ curr_date[4:] }}.failed"
+diff_html_file: "DiffCashAsset{{ curr_date[4:] }}.html"
+diff_check_file: "refference = {{ diff_html_file }}"
+dst_mon_path: "{{ mon_deploy_path }}/static/service-task-info/{{ set_num }}"
+dst_mon_path_htmlfile:  "{{ dst_mon_path }}/{{ diff_html_file }}"
+
+#####################################################################
+
+########################## mon 相关配置 ##############################
+mon_reduce_quota: "{{ mon_deploy_path }}/reduce-quota"
+mon_reduce_quota_date: "{{ mon_reduce_quota }}/{{ curr_date }}"
+mon_reduce_quota_date_sse: "{{ mon_reduce_quota_date }}/sse"
+mon_reduce_quota_date_szse: "{{ mon_reduce_quota_date }}/szse"
+####################################################################
+
+############################## 备份配置 #############################
+oes_backup_path: "{{ slave_path_user_home }}/backup/{{ swf_system_version }}"
+#####################################################################
+
+############################# 任务名 ################################
+get_calendar_name: "calendar_collector"
+get_calendar_ch_name: "交易日历到本地"
+get_calendar_action: 'cd {{ ansible_path_ansible_home }} && sh cmd/calendar_converter.sh'
+get_calendar_register_enable: "{{ calendar_cron_register }}"
+
+datacheck_name: "oes_datacheck"
+datacheck_ch_name: "设置数据检查状态"
+datacheck_action: "cd {{ ansible_path_ansible_home }} && sh cmd/datacheck.sh"
+datacheck_register_enable: "{{ datacheck_cron_register }}"
+
+counter_fetch_name: "counter_fetch"
+counter_fetch_ch_name: "主柜上场数据获取"
+counter_fetch_action: 'cd {{ ansible_path_ansible_home }} && sh cmd/counter_fetch.sh'
+counter_fetch_register_enable: "{{ counter_fetch_cron_register }}"
+
+counter_distribute_name: "counter_distribute"
+counter_distribute_ch_name: "主柜上场数据分发"
+counter_distribute_action: 'cd {{ ansible_path_ansible_home }} && sh cmd/counter_distribute.sh'
+counter_distribute_register_enable: "{{ counter_distribute_cron_register }}"
+
+get_csdc_name: "csdc_collector"
+get_csdc_ch_name: "客户新股文件获取"
+get_csdc_action: 'cd {{ ansible_path_ansible_home }} && sh cmd/csdc.sh'
+get_csdc_name_register_enable: "{{ csdc_cron_register }}"
+
+get_conf_name: "conf_collector"
+get_conf_ch_name: "配置文件获取"
+get_conf_action: 'cd {{ ansible_path_ansible_home }} && sh cmd/conf.sh'
+get_conf_register_enable: "{{ conf_cron_register }}"
+
+get_mon_name: "mon_collector"
+get_mon_ch_name: "客户数据获取"
+get_mon_action: 'cd {{ ansible_path_ansible_home }} && sh cmd/mon.sh'
+get_mon_register_enable: "{{ mon_cron_register }}"
+
+get_sse_name: "sse_collector"
+get_sse_ch_name: "上海产品文件获取"
+get_sse_action: 'cd {{ ansible_path_ansible_home }} && sh cmd/sse.sh'
+get_sse_register_enable: "{{ sse_cron_register }}"
+
+get_szse_name: "szse_collector"
+get_szse_ch_name: "深圳产品文件获取"
+get_szse_action: 'cd {{ ansible_path_ansible_home }} && sh cmd/szse.sh'
+get_szse_register_enable: "{{ szse_cron_register }}"
+
+get_sse_late_name: "sse_late_collector"
+get_sse_late_ch_name: "上海晚到产品文件获取"
+get_sse_late_action: 'cd {{ ansible_path_ansible_home }} && sh cmd/sse_late.sh'
+get_sse_late_register_enable: "{{ sse_late_cron_register }}"
+
+get_szse_late_name: "szse_late_collector"
+get_szse_late_ch_name: "深圳晚到产品文件获取"
+get_szse_late_action: 'cd {{ ansible_path_ansible_home }} && sh cmd/szse_late.sh'
+get_szse_late_register_enable: "{{ szse_late_cron_register }}"
+
+backup_name: "oes_backup"
+backup_ch_name: "备份交易系统"
+backup_action: 'cd {{ ansible_path_ansible_home }} && sh cmd/backup.sh'
+backup_register_enable: "{{ backup_cron_register }}"
+
+
+nakedstart_name:  "oes_nakedstart"
+nakedstart_ch_name: "交易系统裸启动"
+nakedstart_action: "cd {{ ansible_path_ansible_home }} && sh cmd/nakedstart.sh"
+nakedstart_register_enable: "{{ nakedstart_cron_register }}"
+
+open_name: "oes_open"
+open_ch_name: "交易系统开工"
+open_action: "cd {{ ansible_path_ansible_home }} && sh cmd/open.sh"
+open_register_enable: "{{ open_cron_register }}"
+
+close_name: "oes_close"
+close_ch_name: "交易系统收工"
+close_action: "cd {{ ansible_path_ansible_home }} && sh cmd/close.sh"
+close_register_enable: "{{ close_cron_register }}"
+
+load_name: "oes_load"
+load_ch_name: "加载上场文件"
+load_action: "cd {{ ansible_path_ansible_home }} && sh cmd/load.sh"
+load_register_enable: "{{ load_cron_register }}"
+
+stop_name: "oes_stop"
+stop_ch_name: "关闭交易系统"
+stop_action: "cd {{ ansible_path_ansible_home }} && sh cmd/stop.sh"
+stop_register_enable: "{{ stop_cron_register }}"
+
+####################################################################
+
+############################## flag 文件名 ##########################
+flag_name: "{{ cron_job_name }}_{{ curr_date }}"
+flag_success: "{{ flag_name }}.success"
+flag_failed: "{{ flag_name }}.failed"
+flag_retry: "{{ flag_name }}.retry"
+flag_running: "{{ flag_name }}.running"
+flag_timeout: "{{ flag_name }}.timeout"
+flag_error: "{{ flag_name }}.error"
+
+fetch_counter_ok: "DATA_FETCH_COUNTER.{{ curr_date }}.OK"
+fetch_mon_ok: "DATA_FETCH_MON.{{ curr_date }}.OK"
+fetch_sse_ok: "DATA_FETCH_SSE.{{ curr_date }}.OK"
+fetch_szse_ok: "DATA_FETCH_SZSE.{{ curr_date }}.OK"
+fetch_sse_late_ok: "DATA_FETCH_SSE_LATE.{{ curr_date }}.OK"
+fetch_szse_late_ok: "DATA_FETCH_SZSE_LATE.{{ curr_date }}.OK"
+fetch_csdc_ok: "DATA_FETCH_SDC.{{ curr_date }}.OK"
+fetch_conf_ok: "DATA_FETCH_CFG.{{ curr_date }}.OK"
+data_check_ok: "DATA_CHECK.{{ curr_date }}.OK"
+
+fetch_counter_ok_writing: "DATA_FETCH_COUNTER.{{ curr_date }}.OK.writing"
+fetch_mon_ok_writing: "DATA_FETCH_MON.{{ curr_date }}.OK.writing"
+fetch_sse_ok_writing: "DATA_FETCH_SSE.{{ curr_date }}.OK.writing"
+fetch_szse_ok_writing: "DATA_FETCH_SZSE.{{ curr_date }}.OK.writing"
+fetch_csdc_ok_writing: "DATA_FETCH_SDC.{{ curr_date }}.OK.writing"
+data_check_ok_writing: "DATA_CHECK.{{ curr_date }}.OK.writing"
+fetch_conf_ok_writing: "DATA_FETCH_CFG.{{ curr_date }}.OK.writing"
+
+counter_fetch_ok_flag: "fetch_{{ curr_date }}.ok"
+counter_freezed_ok_flag: "freezed_{{ curr_date }}.ok"
+
+xcounter_run_fetch_ok: "XCOUNTER.{{ curr_date }}.OK"
+xcounter_run_freezed_ok: "TRANSFER.{{ curr_date }}.OK"
+#####################################################################
+cron_register_list:
+- name: "{{ get_calendar_name }}"
+  ch_name: "{{ get_calendar_ch_name }}"
+  start_hour: "{{ calendar_start_hour }}"
+  start_minute: "{{ calendar_start_minute }}"
+  action: "{{ get_calendar_action }}"
+  enable: "{{ get_calendar_register_enable }}"
+
+- name: "{{ datacheck_name }}"
+  ch_name: "{{ datacheck_ch_name }}"
+  start_hour: "{{ datacheck_start_hour }}"
+  start_minute: "{{ datacheck_start_minute }}"
+  action: "{{ datacheck_action }}"
+  enable: "{{ datacheck_register_enable }}"
+
+- name: "{{ counter_fetch_name }}"
+  ch_name: "{{ counter_fetch_ch_name }}"
+  start_hour: "{{ counter_fetch_start_hour }}"
+  start_minute: "{{ counter_fetch_start_minute }}"
+  action: "{{ counter_fetch_action }}"
+  enable: "{{ counter_fetch_register_enable }}"
+
+- name: "{{ counter_distribute_name }}"
+  ch_name: "{{ counter_distribute_ch_name }}"
+  start_hour: "{{ counter_distribute_start_hour }}"
+  start_minute: "{{ counter_distribute_start_minute }}"
+  action: "{{ counter_distribute_action }}"
+  enable: "{{ counter_distribute_register_enable }}"
+
+- name: "{{ get_csdc_name }}"
+  ch_name: "{{ get_csdc_ch_name }}"
+  start_hour: "{{ csdc_start_hour }}"
+  start_minute: "{{ csdc_start_minute }}"
+  action: "{{ get_csdc_action }}"
+  enable: "{{ get_csdc_name_register_enable }}"
+
+- name: "{{ get_mon_name }}"
+  ch_name: "{{ get_mon_ch_name }}"
+  start_hour: "{{ mon_start_hour }}"
+  start_minute: "{{ mon_start_minute }}"
+  action: "{{ get_mon_action }}"
+  enable: "{{ get_mon_register_enable }}"
+
+- name: "{{ get_sse_name }}"
+  ch_name: "{{ get_sse_ch_name }}"
+  start_hour: "{{ sse_start_hour }}"
+  start_minute: "{{ sse_start_minute }}"
+  action: "{{ get_sse_action }}"
+  enable: "{{ get_sse_register_enable }}"
+
+- name: "{{ get_sse_late_name }}"
+  ch_name: "{{ get_sse_late_ch_name }}"
+  start_hour: "{{ sse_late_start_hour }}"
+  start_minute: "{{ sse_late_start_minute }}"
+  action: "{{ get_sse_late_action }}"
+  enable: "{{ get_sse_late_register_enable }}"
+
+- name: "{{ get_conf_name }}"
+  ch_name: "{{ get_conf_ch_name }}"
+  start_hour: "{{ conf_start_hour }}"
+  start_minute: "{{ conf_start_minute }}"
+  action: "{{ get_conf_action }}"
+  enable: "{{ get_conf_register_enable }}"
+
+- name: "{{ get_szse_name }}"
+  ch_name: "{{ get_szse_ch_name }}"
+  start_hour: "{{ szse_start_hour }}"
+  start_minute: "{{ szse_start_minute }}"
+  action: "{{ get_szse_action }}"
+  enable: "{{ get_szse_register_enable }}"
+
+- name: "{{ get_szse_late_name }}"
+  ch_name: "{{ get_szse_late_ch_name }}"
+  start_hour: "{{ szse_late_start_hour }}"
+  start_minute: "{{ szse_late_start_minute }}"
+  action: "{{ get_szse_late_action }}"
+  enable: "{{ get_szse_late_register_enable }}"
+
+- name: "{{ backup_name }}"
+  ch_name: "{{ backup_ch_name }}"
+  start_hour: "{{ backup_time_hh }}"
+  start_minute: "{{ backup_time_mm }}"
+  action: "{{ backup_action }}"
+  enable: "{{ backup_register_enable }}"
+
+- name: "{{ nakedstart_name }}"
+  ch_name: "{{ nakedstart_ch_name }}"
+  start_hour: "{{ nakedstart_start_hour }}"
+  start_minute: "{{ nakedstart_start_minute }}"
+  action: "{{ nakedstart_action }}"
+  enable: "{{ nakedstart_register_enable }}"
+
+- name: "{{ open_name }}"
+  ch_name: "{{ open_ch_name }}"
+  start_hour: "{{ open_start_hour }}"
+  start_minute: "{{ open_start_minute }}"
+  action: "{{ open_action }}"
+  enable: "{{ open_register_enable }}"
+
+- name: "{{ close_name }}"
+  ch_name: "{{ close_ch_name }}"
+  start_hour: "{{ close_start_hour }}"
+  start_minute: "{{ close_start_minute }}"
+  action: "{{ close_action }}"
+  enable: "{{ close_register_enable }}"
+
+- name: "{{ load_name }}"
+  ch_name: "{{ load_ch_name }}"
+  start_hour: "{{ load_start_hour }}"
+  start_minute: "{{ load_start_minute }}"
+  action: "{{ load_action }}"
+  enable: "{{ load_register_enable }}"
+
+- name: "{{ stop_name }}"
+  ch_name: "{{ stop_ch_name }}"
+  start_hour: "{{ stop_start_hour }}"
+  start_minute: "{{ stop_start_minute }}"
+  action: "{{ stop_action }}"
+  enable: "{{ stop_register_enable }}"
+
+
+
+
+
+
+
+
+

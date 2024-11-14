@@ -1,0 +1,8 @@
+---
+
+- name: clear running flag
+  file:
+    path: "{{ ansible_flag }}/{{ flag_running }}"
+    state: absent
+  delegate_to: 127.0.0.1
+  run_once: true

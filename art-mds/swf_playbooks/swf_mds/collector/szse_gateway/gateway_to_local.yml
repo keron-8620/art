@@ -1,0 +1,15 @@
+---
+
+- name: clear szse directory
+  shell: "cd {{ ansible_path_files_szse }} && rm -rf *"
+  delegate_to: 127.0.0.1
+  run_once: true
+
+- name: fetch remote szse file
+  shell: python3 run_command.py "rsync -az --no-r -e 'ssh -p {{ ssh_port }}' {{ szse_user }}@{{ szse_host }}:{{ gateway_path_root_szse }}/{{ item }} {{ ansible_path_files_szse }}/"
+  args:
+    chdir: "{{ ansible_path_scripts_files }}"
+  with_items: "{{ szse_cp_files_list }}"
+  ignore_errors: yes
+  delegate_to: 127.0.0.1
+  run_once: yes

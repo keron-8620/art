@@ -1,0 +1,86 @@
+---
+- name: get curr hhmm
+  command: 'date +%H%M'
+  delegate_to: 127.0.0.1
+  register: curr_time_hhmm
+
+- name: get next hhmm
+  command: 'date +%H%M -d "{{ cron_job_cycles }} minutes"'
+  delegate_to: 127.0.0.1
+  register: next_time_hhmm
+
+################## 命令直接设置oes 状态 ######################
+- name: site data fetch status success
+  command: "{{ success_cmd }}"
+  args:
+    chdir: "{{ slave_path_mds_home_bin }}"
+  when: check_result is success and ansible_play_hosts == ansible_play_hosts_all and set_mds_status
+  ignore_errors: true
+################## 命令直接设置oes 状态 ######################
+
+################# 目标主机创建成功标志 ######################
+- name: slave create fetch data files flag
+  shell: "echo 'success' > {{ slave_path_mds_home_data_flags }}/{{ fetch_ok_flag }}"
+  when: check_result is success and ansible_play_hosts == ansible_play_hosts_all
+################# 目标主机创建成功标志 ######################
+
+######################## mon日志模块 ######################
+- name: "send success log to mon"
+  command: "{{ python3 }} mon_log.py -l bzinf -c '{{ cron_job_name }} success'"
+  args:
+    chdir: "{{ ansible_path_scripts_files }}"
+  when: check_result is success
+  delegate_to: 127.0.0.1
+  run_once: true
+  ignore_errors: yes
+
+- name: "send failed log to mon"
+  command: "{{ python3 }} mon_log.py -l bzwarn -c '{{ cron_job_name }} failed'"
+  args:
+    chdir: "{{ ansible_path_scripts_files }}"
+  when: check_result is failed
+  delegate_to: 127.0.0.1
+  run_once: true
+  ignore_errors: yes
+######################## 日志模块 ######################
+
+######################## 本地标志文件模块 ###############
+- name: site data fetch status failed
+  command: "{{ failed_cmd }}"
+  args:
+    chdir: "{{ slave_path_mds_home_bin }}"
+  when: "(check_result is failed and \
+         curr_time_hhmm.stdout.strip()|int < task_end_time|int or \
+         ansible_play_hosts != ansible_play_hosts_all) and \
+         set_mds_status"
+  ignore_errors: true
+
+- name: site data fetch status failed and timeout
+  command: "{{ timeout_cmd }}"
+  args:
+    chdir: "{{ slave_path_mds_home_bin }}"
+  when: "(check_result is failed or ansible_play_hosts != ansible_play_hosts_all) and \
+          curr_time_hhmm.stdout.strip()|int >= task_end_time|int and \
+          set_mds_status"
+  ignore_errors: true
+
+- name: "touch {{ cron_job_name }} success"
+  shell: "echo 'success' > {{ ansible_flag }}/{{ flag_success }}"
+  when: "check_result is success and ansible_play_hosts == ansible_play_hosts_all"
+  delegate_to: 127.0.0.1
+  run_once: true
+
+- name: "touch {{ cron_job_name }} failed"
+  shell: "echo 'fail' > {{ ansible_flag }}/{{ flag_failed }}"
+  when: " check_result is failed and \
+          curr_time_hhmm.stdout.strip()|int < task_end_time|int or ansible_play_hosts != ansible_play_hosts_all"
+  delegate_to: 127.0.0.1
+  run_once: true
+
+- name: "touch {{ cron_job_name }} timeout"
+  shell: "echo 'timeout' > {{ ansible_flag }}/{{ flag_timeout }}"
+  when: " check_result is failed and \
+          curr_time_hhmm.stdout.strip()|int >= task_end_time|int "
+  delegate_to: 127.0.0.1
+  run_once: true
+######################## 本地标志文件模块 ###############

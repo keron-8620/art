@@ -1,0 +1,9 @@
+---
+
+- name: send sse security files
+  synchronize:
+    src: "{{ ansible_path_files_exchange_sse }}/"
+    dest: "{{ slave_path_oes_home_data_exchange }}"
+    checksum: yes
+  register: collector_sse_files_result
+  ignore_errors: yes

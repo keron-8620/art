@@ -1,0 +1,19 @@
+
+- name: create backup .success flag on local host
+  file:
+    path: "{{ ansible_flag }}/{{ flag_success }}"
+    state: touch
+  when: "backup_res is success"
+  connection: local
+  run_once: yes
+
+- name: create backup .failed flag on local host
+  file:
+    path: "{{ ansible_flag }}/{{ flag_failed }}"
+    state: touch
+  when: "backup_res is failed"
+  connection: local
+  run_once: yes
+
+
+

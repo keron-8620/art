@@ -1,0 +1,35 @@
+
+---
+- hosts: all
+  vars_files:
+    - ../../../inventory/vars_files/common_vars.yml
+    - ./sse_late_gateway/sse_late_vars.yml
+    - ../../../automatic.yml
+
+  handlers:
+    - include: ../common/crontab_handlers.yml
+
+  tasks:
+    - include: ../common/get_time.yml
+
+    - include: ../common/before_playbook.yml
+
+    - block:
+      - include: ./sse_late_gateway/gateway_to_local.yml
+
+      - include: ./sse_late_gateway/local_to_oes.yml
+
+      - include: ./sse_late_gateway/sse_late_checker.yml
+
+      - include: ../common/set_status.yml
+
+      - include: ../common/check_OK_flag.yml
+
+      - include: ../common/colct_register.yml
+        when: not disable_sse_late_collector
+
+    - include: ../common/after_playbook.yml
+
+
+
+

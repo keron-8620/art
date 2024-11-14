@@ -1,0 +1,24 @@
+---
+- hosts: all
+  vars_files:
+    - ../../../inventory/vars_files/common_vars.yml
+    - ./shutoff/oes_shutoff_vars.yml
+    - ../../../automatic.yml
+
+  handlers:
+    - include: ../common/crontab_handlers.yml
+
+  tasks:
+    - include: ../common/get_time.yml
+
+
+    - block:
+
+      - include: ./shutoff/oes_shutoff.yml
+
+      when: not disable_oes_shutoff
+
+    - include: ../common/after_playbook.yml
+
+
+

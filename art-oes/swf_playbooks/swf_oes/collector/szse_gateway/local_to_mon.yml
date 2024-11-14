@@ -1,0 +1,12 @@
+- block:
+  - name: ensure mon_reduce_quota_date_szse exist
+    raw: "ssh {{ mon_user }}@{{ mon_host}} mkdir -p {{ mon_reduce_quota_date_szse }}"
+
+  - name: copy reduce_quota*.csv to mon
+    raw: "scp -r {{ item }} {{ mon_user }}@{{ mon_host}}:{{ mon_reduce_quota_date_szse }}"
+    with_fileglob:
+      - "{{ ansible_path_files_exchange_szse }}/reducequota_*_{{ curr_date }}.csv"
+
+  delegate_to: 127.0.0.1
+  run_once: yes
+  ignore_errors: yes

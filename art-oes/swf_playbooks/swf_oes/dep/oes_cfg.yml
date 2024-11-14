@@ -1,0 +1,45 @@
+---
+
+- name: copy common cfg file
+  copy:
+    src: "{{ item }}"
+    dest: "{{ slave_path_oes_home_conf }}"
+    owner: "{{ oesuser }}"
+    group: "{{ oesuser }}"
+    mode: 0644
+    force: yes
+  with_fileglob:
+    - "{{ ansible_path_files_config_all }}/*"
+
+- name: copy spec cfg file
+  copy:
+    src: "{{ item }}"
+    dest: "{{ slave_path_oes_home_conf }}"
+    owner: "{{ oesuser }}"
+    group: "{{ oesuser }}"
+    mode: 0644
+    force: yes
+  with_fileglob:
+    - "{{ ansible_path_files_config_spec }}/*"
+
+- name: copy script to oes
+  copy:
+    src: "{{ ansible_path_scripts_files }}/{{ item }}"
+    dest: "{{ slave_path_oes_home_art }}"
+  with_items:
+    - "clear_dirs.py"
+    - "clear_old_backup_files.py"
+    - "watch.py"
+    - "multiprocess_backup_txlog.py"
+
+- name: copy script to mon
+  copy:
+    src: "{{ ansible_path_scripts_files }}/{{ item }}"
+    dest: "{{ mon_deploy_path }}/art/"
+  with_items:
+    - "watch.py"
+  delegate_to: mon_host
+  run_once: yes
+  ignore_errors: yes
+
+

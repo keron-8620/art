@@ -1,0 +1,21 @@
+---
+
+- name: HS transfer2oes thaw
+  raw: 'cd {{ ansible_path_files_counter_bin_script }} &&
+        export LD_LIBRARY_PATH=$PWD:$PWD/../lib &&
+        {{ python3 }} $PWD/xcounter2oes_transfer2counter_main.py -Y -s0 2> xcounter2oes_transfer2counter_main.log'
+  when: counter == 'HS'
+  delegate_to: 127.0.0.1
+  run_once: true
+  register: thaw_counter_result
+  ignore_errors: True
+
+- name: DD transfer2oes thaw
+  raw: 'cd {{ ansible_path_files_counter_bin_script }} &&
+        export LD_LIBRARY_PATH=$PWD:$PWD/../lib &&
+        {{ python3 }} $PWD/xcounter2oes_transfer2counter_main.py -CHY -s0 2> xcounter2oes_transfer2counter_main.log'
+  when: counter == 'DD' or broker == "cczq"
+  delegate_to: 127.0.0.1
+  run_once: true
+  register: thaw_counter_result
+  ignore_errors: True

@@ -1,0 +1,9 @@
+---
+cron_job_name: "{{ counter_fetch_name }}"
+cron_chinese_name: "{{ counter_fetch_ch_name }}"
+cron_job_start_hour: "{{ counter_fetch_start_hour }}"
+cron_job_start_minute: "{{counter_fetch_start_minute}}"
+cron_job_action: "{{ counter_fetch_action }}"
+
+task_end_time: "{{ counter_distribute_end_time }}"
+art_run_once: "{{ counter_fetch_run_once }}"

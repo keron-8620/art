@@ -1,0 +1,43 @@
+---
+- name: site oes fetch szse running
+  command: "./oes taskstatus -k  DATA_FETCH_SZSE -S 2"
+  args:
+    chdir: "{{ slave_path_oes_home_bin }}"
+  when: set_oes_status
+  ignore_errors: True
+
+- name: remove OK flag file
+  file:
+    path: "{{ slave_path_oes_home_data_flags }}/{{ item }}"
+    state: absent
+  with_items:
+    - "{{ fetch_szse_ok }}"
+  ignore_errors: yes
+
+- name: clear szse file
+  block:
+    - name: clear szse_etf directory
+      shell: "cd {{ ansible_path_files_exchange_szse_etf }} && rm -rf *"
+
+    - name: clear szse directory
+      shell: "cd {{ ansible_path_files_exchange_szse }} && rm -rf *"
+
+  delegate_to: 127.0.0.1
+  run_once: true
+
+- block:
+  - name: fetch remote szse file
+    shell: python3 run_command.py "rsync -az --no-r -e 'ssh -p {{ ssh_port }}' {{ szse_user }}@{{ szse_host }}:{{ gateway_path_root_exchange_szse }}/{{ item }} {{ ansible_path_files_exchange_szse }}/"
+    args:
+      chdir: "{{ ansible_path_scripts_files }}"
+    with_items: "{{ szse_cp_files }}"
+    ignore_errors: yes
+
+  - name: fetch remote szse etf file
+    shell: python3 run_command.py "rsync -az --no-r -e 'ssh -p {{ ssh_port }}' {{ szse_user }}@{{ szse_host }}:{{ gateway_path_root_exchange_szse_etf }}/{{ item }} {{ ansible_path_files_exchange_szse_etf }}/"
+    args:
+      chdir: "{{ ansible_path_scripts_files }}"
+    with_items: "{{ szse_etf_cp_files }}"
+    ignore_errors: yes
+  delegate_to: 127.0.0.1
+  run_once: yes

@@ -1,0 +1,18 @@
+
+---
+- hosts: all
+  vars_files:
+    - ../../../inventory/vars_files/common_vars.yml
+    - ../../../automatic.yml
+
+  tasks:
+    - name: ping all host
+      ping:
+      register: ping_res
+      ignore_errors: True
+
+    - name: print ping_res
+      debug:
+        msg: "{{ ping_res }}"
+
+

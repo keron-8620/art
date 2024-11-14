@@ -1,0 +1,18 @@
+---
+
+- name: check xcounter_fetch OK flag
+  stat:
+    path: "{{ ansible_flag }}/{{ fetch_ok_flag }}"
+  delegate_to: 127.0.0.1
+  run_once: yes
+  register: xcounter_fetch_ok
+
+
+- name: check xcounter_freezed OK flag
+  stat:
+    path: "{{ ansible_flag }}/{{ freezed_ok_flag }}"
+  delegate_to: 127.0.0.1
+  run_once: yes
+  register: xcounter_freezed_ok
+
+

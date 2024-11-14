@@ -1,0 +1,26 @@
+---
+- hosts: all
+  vars_files:
+    - ../../../inventory/vars_files/common_vars.yml
+    - ./datacheck/oes_datacheck_vars.yml
+    - ../../../automatic.yml
+
+  handlers:
+    - include: ../common/crontab_handlers.yml
+
+  tasks:
+
+    - include: ../common/get_time.yml
+
+    - include: ../common/before_playbook.yml
+
+    - block:
+      - include: ./datacheck/oes_datacheck.yml
+
+      - include: ./datacheck/site_status.yml
+
+      - include: ./datacheck/oes_datacheck_register.yml
+
+      when: not disable_oes_datacheck
+
+    - include: ../common/after_playbook.yml

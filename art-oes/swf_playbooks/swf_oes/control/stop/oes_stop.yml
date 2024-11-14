@@ -1,0 +1,10 @@
+---
+
+- name: stop oes
+  command: "{{ cmd }}"
+  args:
+    chdir: "{{ slave_path_oes_home_bin }}"
+  register: stop_res
+  ignore_errors: True
+
+

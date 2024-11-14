@@ -1,0 +1,47 @@
+---
+
+- name: check xcounter_fetch OK flag
+  stat:
+    path: "{{ ansible_flag }}/{{ counter_fetch_ok_flag }}"
+  delegate_to: 127.0.0.1
+  run_once: yes
+  register: xcounter_fetch_ok
+
+- name: print check xcounter_fetch res if flag is not exist
+  debug:
+    msg: "xcounter_fetch OK flag is not exist"
+  when: not xcounter_fetch_ok.stat.exists
+  delegate_to: 127.0.0.1
+  run_once: yes
+
+- name: send check xcounter_fetch res if flag is not exist to mon
+  command: "{{ python3 }} mon_log.py -c 'xcounter_fetch OK flag is not exist' >> /dev/null"
+  args:
+    chdir: "{{ ansible_path_scripts_files }}"
+  when: not xcounter_fetch_ok.stat.exists
+  delegate_to: 127.0.0.1
+  ignore_errors: yes
+  run_once: yes
+
+- name: check xcounter_freezed OK flag
+  stat:
+    path: "{{ ansible_flag }}/{{ counter_freezed_ok_flag }}"
+  delegate_to: 127.0.0.1
+  run_once: yes
+  register: xcounter_freezed_ok
+
+- name: print check xcounter_freeze res if flag is not exist
+  debug:
+    msg: "xcounter_freeze OK flag is not exist"
+  when: not xcounter_freezed_ok.stat.exists
+  delegate_to: 127.0.0.1
+  run_once: yes
+
+- name: send check xcounter_fetch res if flag is not exist to mon
+  command: "{{ python3 }} mon_log.py -c 'xcounter_freeze OK flag is not exist' >> /dev/null"
+  args:
+    chdir: "{{ ansible_path_scripts_files }}"
+  when: not xcounter_freezed_ok.stat.exists
+  delegate_to: 127.0.0.1
+  ignore_errors: yes
+  run_once: yes

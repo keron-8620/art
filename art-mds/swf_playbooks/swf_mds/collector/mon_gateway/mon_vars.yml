@@ -1,0 +1,20 @@
+---
+#cron_job_name: "mon_collector"
+#cron_chinese_name: "mon数据获取"
+#cron_job_start_hour: "{{ mon_start_hour }}"
+#cron_job_start_minute: "{{ mon_start_minute }}"
+#cron_job_action: 'cd {{ ansible_path_ansible_home }} && sh cmd/mon.sh'
+
+cron_job_name: "{{ get_mon_name }}"
+cron_chinese_name: "{{ get_mon_ch_name }}"
+cron_job_start_hour: "{{ mon_start_hour }}"
+cron_job_start_minute: "{{ mon_start_minute }}"
+cron_job_action: "{{ get_mon_action }}"
+
+success_cmd: "./mds taskstatus -k DATA_FETCH_MON -S 5 -m ''"
+failed_cmd: "./mds taskstatus -k DATA_FETCH_MON -S 4 -m '获取数据失败, {{cron_job_cycles}}分钟后尝试重新拉取数据'"
+timeout_cmd: "./mds taskstatus -k DATA_FETCH_MON -S 4 -m '获取数据失败, 需人工干预'"
+
+fetch_ok_flag: "{{ fetch_mon_ok }}"
+task_end_time: "{{ mon_end_time }}"
+art_run_once: "{{ mon_run_once }}"

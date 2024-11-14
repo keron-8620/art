@@ -1,0 +1,35 @@
+---
+- hosts: all
+  vars_files:
+    - ../../../inventory/vars_files/common_vars.yml
+    - ../../../.tmp/szse_etf.yml
+    - ./szse_gateway/szse_vars.yml
+    - ../../../automatic.yml
+
+  handlers:
+    - include: ../common/crontab_handlers.yml
+
+  tasks:
+    - include: ../common/get_time.yml
+
+    - include: ../common/before_playbook.yml
+
+    - block:
+      - include: ./szse_gateway/gateway_to_local.yml
+
+      - include: ./szse_gateway/local_to_oes.yml
+
+      - include: ./szse_gateway/local_to_mon.yml
+
+      - include: ./szse_gateway/szse_checker.yml
+
+      - include: ../common/set_status.yml
+
+      - include: ../common/check_OK_flag.yml
+
+      - include: ../common/colct_register.yml
+        when: not disable_szse_collector
+
+    - include: ../common/after_playbook.yml
+
+

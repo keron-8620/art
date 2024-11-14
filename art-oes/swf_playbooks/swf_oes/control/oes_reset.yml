@@ -1,0 +1,23 @@
+---
+- hosts: all
+  vars_files:
+    - ../../../inventory/vars_files/common_vars.yml
+    - ./reset/oes_reset_vars.yml
+    - ../../../automatic.yml
+
+  handlers:
+    - include: ../common/crontab_handlers.yml
+
+  tasks:
+    - include: ../common/get_time.yml
+
+    - block:
+
+      - include: ./reset/oes_reset.yml
+
+      when: not disable_oes_reset
+
+    - include: ../common/after_playbook.yml
+
+
+

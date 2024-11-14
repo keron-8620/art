@@ -1,0 +1,35 @@
+---
+
+
+#- name: to update.flag
+#  raw: "echo -e '{{ curr_date }}' > {{ ansible_path_files_conf }}/update.flag"
+#  delegate_to: 127.0.0.1
+#  run_once: yes
+
+#- name: copy conf file
+#  copy:
+#    src: "{{ ansible_path_files_conf }}/{{ item.name }}"
+#    dest: "{{ slave_path_oes_home }}/{{ item.dst }}"
+#    owner: "{{ oesuser }}"
+#    group: "{{ oesuser }}"
+#    mode: 0644
+#  with_items: "{{ conf_cp_files }}"
+#  ignore_errors: yes
+
+- name: "unarchive conf_{{ curr_date }}.tar.gz"
+  unarchive:
+    src: "{{ ansible_path_files_conf }}/conf_{{ curr_date }}.tar.gz"
+    dest: "{{ slave_path_oes_home_conf }}/"
+  ignore_errors: True
+
+
+- name: "rename the dir to monitor"
+  command: "mv {{ gateway_path_root_conf.split('/')[-1] }} monitor"
+  args:
+    chdir: "{{ slave_path_oes_home_conf }}"
+  when: "gateway_path_root_conf.split('/')[-1] != 'monitor'"
+  ignore_errors: True
+
+
+
+

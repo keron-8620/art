@@ -1,0 +1,35 @@
+---
+- hosts: all
+  vars_files:
+    - ../../../inventory/vars_files/common_vars.yml
+    - ./counter_distribute/counter_vars.yml
+    - ../../../automatic.yml
+
+  handlers:
+    - include: ../common/crontab_handlers.yml
+
+  tasks:
+    - include: ../common/get_time.yml
+
+    - include: ../common/before_playbook.yml
+
+    - block:
+      - include: ./counter_distribute/flag_checker.yml
+
+      - include: ./counter_distribute/local_to_oes.yml
+        when: xcounter_freezed_ok.stat.exists
+
+      - include: ./counter_distribute/local_to_othrt_art.yml
+        when: xcounter_freezed_ok.stat.exists and is_enable_counter_two_places == 'enable' and local_art_status_info == 'master'
+
+      - include: ./counter_distribute/counter_checker.yml
+
+      - include: ../common/set_status.yml
+
+      - include: ../common/check_OK_flag.yml
+
+      - include: ../common/colct_register.yml
+
+        when: not disable_counter_distribute
+
+    - include: ../common/after_playbook.yml

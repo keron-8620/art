@@ -1,0 +1,14 @@
+---
+
+- block:
+  - name: ensure mon_reduce_quota_date_sse exist
+    raw: "ssh {{ mon_user }}@{{ mon_host}} mkdir -p {{ mon_reduce_quota_date_sse }}"
+
+  - name: copy jckz*.txt to mon
+    raw: "scp -r {{ item }} {{ mon_user }}@{{ mon_host}}:{{ mon_reduce_quota_date_sse }}"
+    with_fileglob:
+      - "{{ ansible_path_files_exchange_sse }}/jckz*.txt"
+
+  delegate_to: 127.0.0.1
+  run_once: yes
+  ignore_errors: yes

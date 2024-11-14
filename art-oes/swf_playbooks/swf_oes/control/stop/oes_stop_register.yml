@@ -1,0 +1,18 @@
+---
+
+- name: init stop oes
+  raw: date +%H%M
+  notify:
+    - handler init cron job
+  when: "stop_res is success and ansible_play_hosts == ansible_play_hosts_all or curr_time_hhmm.stdout.strip()|int > load_end_time|int"
+  delegate_to: 127.0.0.1
+  run_once: true
+
+- name: update stop oes
+  raw: date +%H%M
+  notify:
+    - handler update cron job
+  when: "ansible_play_hosts != ansible_play_hosts_all or stop_res is failed and curr_time_hhmm.stdout.strip()|int <= load_end_time|int"
+  delegate_to: 127.0.0.1
+  run_once: true
+

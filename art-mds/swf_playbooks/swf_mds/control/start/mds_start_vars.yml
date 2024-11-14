@@ -1,0 +1,6 @@
+---
+cron_job_name: "start_mds"
+cron_chinese_name: "行情系统启动"
+cron_job_start_hour: "{{ cron_job_mds_start_time_hh }}"
+cron_job_start_minute: "{{ cron_job_mds_start_time_mm }}"
+cron_job_action: 'cd {{ ansible_path_ansible_home }} && sh cmd/start.sh'

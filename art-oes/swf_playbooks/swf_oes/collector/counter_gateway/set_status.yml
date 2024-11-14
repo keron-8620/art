@@ -1,0 +1,49 @@
+---
+
+- name: verify fetch_flag and freeze_flag is_exist
+  debug:
+    msg: " fetch_flag is not existed or  freeze_flag is not  existed"
+  failed_when: not xcounter_fetch_ok.stat.exists or not xcounter_freezed_ok.stat.exists
+  register: check_result
+  delegate_to: 127.0.0.1
+  run_once: true
+  ignore_errors: yes
+
+- name: touch counter_collector success
+  shell: "echo 'success' > {{ ansible_flag }}/{{ flag_success }}"
+  when: check_result is success and ansible_play_hosts == ansible_play_hosts_all
+  delegate_to: 127.0.0.1
+  run_once: true
+
+- name: "send success log to mon"
+  command: "{{ python3 }} mon_log.py -l bzinf -c '{{ cron_job_name }} success'"
+  args:
+    chdir: "{{ ansible_path_scripts_files }}"
+  delegate_to: 127.0.0.1
+  run_once: true
+  when: check_result is success
+  ignore_errors: yes
+
+- name: "send failed log to mon"
+  command: "{{ python3 }} mon_log.py -l bzwarn -c '{{ cron_job_name }} failed'"
+  args:
+    chdir: "{{ ansible_path_scripts_files }}"
+  when: check_result is failed
+  delegate_to: 127.0.0.1
+  run_once: true
+  ignore_errors: yes
+
+- name: touch counter_collector failed
+  shell: "echo 'fail' > {{ ansible_flag }}/{{ flag_retry }}"
+  when: "check_result is failed and \
+         curr_time_hhmm.stdout.strip()|int < counter_fetch_end_time|int or \
+         ansible_play_hosts != ansible_play_hosts_all"
+  delegate_to: 127.0.0.1
+  run_once: true
+
+- name: touch counter_collector timeout
+  shell: "echo 'timeout' > {{ ansible_flag }}/{{ flag_timeout }}"
+  when: "check_result is failed and \
+         curr_time_hhmm.stdout.strip()|int >= counter_fetch_end_time|int"
+  delegate_to: 127.0.0.1
+  run_once: true

@@ -1,0 +1,33 @@
+---
+
+#- name: scp remote mon file
+#  raw: "scp -r {{ mon_user }}@{{ mon_host}}:{{ gateway_path_root_mon }}/{{item}} {{ ansible_path_files_mon }}"
+#  with_items:
+#    - "TradingCalendar.csv"
+#  ignore_errors: yes
+#  delegate_to: 127.0.0.1
+#  run_once: yes
+#  register: scp_mon_file_res
+
+- name: fetch remote TradingCalendar.csv
+  fetch:
+    src: "{{ gateway_path_root_mon }}/TradingCalendar.csv"
+    dest: "{{ ansible_path_files_mon }}/"
+    flat: yes
+  delegate_to: mon_host
+  run_once: yes
+  register: scp_mon_file_res
+  ignore_errors: yes
+
+- name: trading_calendar converter
+  command: "{{ parse_cmd }}"
+  args:
+    chdir: "{{ ansible_path_scripts_files }}"
+  delegate_to: 127.0.0.1
+  run_once: yes
+  ignore_errors: yes
+  register: converter_res
+
+
+
+

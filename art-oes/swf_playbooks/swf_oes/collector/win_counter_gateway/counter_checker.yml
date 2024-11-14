@@ -1,0 +1,27 @@
+---
+
+- name: check counter files ready
+  wait_for:
+    path: "{{ ansible_path_files_counter_data_broker }}/{{item}}"
+    state: present
+    timeout: 1
+  with_items: "{{ counter_check_files }}"
+  delegate_to: 127.0.0.1
+  run_once: yes
+  register: check_result
+  ignore_errors: yes
+
+- name: check xcounter.ok is exist
+  stat:
+    path: "{{ ansible_path_files_counter_data_broker }}/{{ xcounter_run_fetch_ok }}"
+  delegate_to: 127.0.0.1
+  run_once: yes
+  register: xcounter_run_fetch_ok
+
+- name: create fetch ok flag
+  file:
+    path: "{{ ansible_flag }}/{{ fetch_ok_flag }}"
+    state: touch
+  when: check_result is success and xcounter_run_fetch_ok.stat.exists
+  delegate_to: 127.0.0.1
+  run_once: yes

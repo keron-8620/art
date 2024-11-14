@@ -1,0 +1,93 @@
+---
+- name: create oes home path directory
+  file:
+    path: "{{ slave_path_user_home }}"
+    state: directory
+
+- name: create ansible flag
+  file:
+    path: "{{ ansible_flag }}"
+    state: directory
+  delegate_to: 127.0.0.1
+  run_once: true
+
+- name: create ansible_path_files_exchange sse and szse tree
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - "{{ ansible_path_files_exchange_sse }}"
+    - "{{ ansible_path_files_exchange_sse_etf }}"
+    - "{{ ansible_path_files_exchange_szse }}"
+    - "{{ ansible_path_files_exchange_szse_etf }}"
+  delegate_to: 127.0.0.1
+  run_once: true
+
+- name: unarchive oes_tarpkgs_name
+  unarchive:
+    src: "{{ ansible_path_files_bin }}/{{ oes_tarpkgs_name }}"
+    dest: "{{ ansible_path_files_bin }}"
+    copy: no
+    list_files: yes
+  register: filelists
+  delegate_to: 127.0.0.1
+  ignore_errors: yes
+  run_once: yes
+
+- name: rename oes_tarpkgs_name
+  command: "mv {{ filelists.files[0] }} {{ oes_pkg_name }}"
+  args:
+    chdir: "{{ ansible_path_files_bin }}/"
+  when: filelists.files[0][:-1] != oes_pkg_name
+  delegate_to: 127.0.0.1
+  ignore_errors: yes
+  run_once: yes
+
+- name: copy oes files to slave
+  synchronize:
+    src: "{{ ansible_path_files_bin }}/{{ oes_pkg_name }}"
+    dest: "{{ slave_path_user_home }}"
+
+- name: remove directory oes_pkg_name
+  shell: "cd {{ ansible_path_files_bin }} && rm -rf {{ oes_pkg_name }}"
+  delegate_to: 127.0.0.1
+  run_once: yes
+
+- name: create oes path home dirctory
+  file:
+    path: "{{ slave_path_oes_home }}"
+    state: directory
+
+- name: unarchive xcounter_tarpkgs_name
+  unarchive:
+    src: "{{ ansible_path_files_bin }}/{{ xcter_tarpkg_name }}"
+    dest: "{{ ansible_path_files_bin }}"
+    copy: no
+    list_files: yes
+  register: filelists
+  delegate_to: 127.0.0.1
+  ignore_errors: yes
+  run_once: yes
+
+- name: rename xcter_pkg_name
+  command: "mv {{ filelists.files[0] }} {{ xcter_pkg_name }}"
+  args:
+    chdir: "{{ ansible_path_files_bin }}/"
+  when: filelists.files[0][:-1] != xcter_pkg_name
+  delegate_to: 127.0.0.1
+  ignore_errors: yes
+  run_once: yes
+
+- name: copy xcounter files to slave
+  synchronize:
+    src: "{{ ansible_path_files_bin }}/{{ xcter_pkg_name }}"
+    dest: "{{ slave_path_oes_home }}"
+
+- name: remove directory oes_pkg_name
+  shell: "cd {{ ansible_path_files_bin }} && rm -rf {{ xcter_pkg_name }}"
+  delegate_to: 127.0.0.1
+  run_once: yes
+
+- name: cp xcounter/bin to oes/bin
+  raw: "cp -r {{ slave_path_oes_home }}/{{ xcter_pkg_name }}/bin/* {{ slave_path_oes_home }}/bin"
+  ignore_errors: yes

@@ -1,0 +1,9 @@
+---
+- name: oes open
+  command: ./oes open
+  args:
+    chdir: "{{ slave_path_oes_home_bin }}"
+  register: open_res
+  ignore_errors: True
+
+

@@ -1,0 +1,20 @@
+
+---
+- hosts: 127.0.0.1
+  vars_files:
+    - /opt/ansible/inventory/swf_oes/vars_files/mail_addr.yml
+  tasks:
+    - name: send mail
+      mail:
+        host: smtp.ym.163.com
+        port: 25
+        username: "{{ mail_addr_from }}"
+        password: "liujianhua@!00"
+        subject: Ansible-report
+        body: "{{ msg }}"
+        from: "{{ mail_addr_from }}"
+        to: "{{ mail_addr_to }}"
+        cc: "{{ mail_addr_cc }}"
+        attach: /opt/ansible/logs/temp.log
+        charset: utf8
+      when: counter_files_check_result|failed

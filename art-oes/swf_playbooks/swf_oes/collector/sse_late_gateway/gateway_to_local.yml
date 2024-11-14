@@ -1,0 +1,18 @@
+---
+
+- name: remove OK flag file
+  file:
+    path: "{{ slave_path_oes_home_data_flags }}/{{ item }}"
+    state: absent
+  with_items:
+  - "{{ fetch_sse_late_ok }}"
+  ignore_errors: yes
+
+- name: fetch remote sse file
+  command: python3 run_command.py "rsync -az --no-r -e 'ssh -p {{ ssh_port }}' {{ sse_user }}@{{ sse_host }}:{{ gateway_path_root_exchange_sse }}/{{ item }} {{ ansible_path_files_exchange_sse }}/"
+  args:
+    chdir: "{{ ansible_path_scripts_files }}"
+  with_items: "{{ sse_late_cp_files }}"
+  ignore_errors: yes
+  delegate_to: 127.0.0.1
+  run_once: yes

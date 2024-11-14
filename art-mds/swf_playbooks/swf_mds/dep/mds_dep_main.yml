@@ -1,0 +1,10 @@
+---
+- hosts: all
+  vars_files:
+    - ../../../inventory/vars_files/common_vars.yml
+    - ../../../automatic.yml
+
+  tasks:
+    - include: ./mds_dep.yml
+
+    - include: ./mds_cfg.yml

@@ -1,0 +1,10 @@
+
+- name: check slave OK flag
+  wait_for:
+    path: "{{ slave_path_oes_home_data_flags }}/{{ fetch_ok_flag }}"
+    state: present
+    timeout: 1
+  register: check_slave_ok_res
+  ignore_errors: yes
+
+

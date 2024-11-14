@@ -1,0 +1,19 @@
+---
+
+- name: start master mds
+  command: ./mds start
+  args:
+    chdir: "{{ slave_path_mds_home_bin }}"
+  when: "ansible_host==mds_master_hostname"
+  ignore_errors: True
+
+- name: sleep 2s
+  pause:
+   seconds: 2
+
+- name: start follow mds
+  command: ./mds start
+  args:
+    chdir: "{{ slave_path_mds_home_bin }}"
+  when: "ansible_host!=mds_master_hostname"
+  ignore_errors: True

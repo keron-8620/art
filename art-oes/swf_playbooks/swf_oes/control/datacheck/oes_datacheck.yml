@@ -1,0 +1,69 @@
+---
+- name: get curr hhmmss
+  command: date +"%H%M%S"
+  register: target_time
+
+- name: remove OK flag file
+  file:
+    path: "{{ slave_path_oes_home_data_flags }}/{{ item }}"
+    state: absent
+  with_items:
+    - "{{ data_check_ok }}"
+    - "{{ data_check_ok_writing }}"
+  ignore_errors: yes
+
+- block:
+  - name: is exist consistentcy_success
+    stat:
+      path: "{{ ansible_path_files_counter_data_broker }}/{{ consistentcy_success }}"
+    delegate_to: 127.0.0.1
+    run_once: true
+    register: consistentcy_success_isexist
+
+  - name: site status
+    command: "./oes taskstatus -k DATA_CHECK -S 5 -B {{ target_time.stdout.strip() }} -E {{ target_time.stdout.strip() }} -r {{ diff_html_file }}"
+    args:
+      chdir: "{{ slave_path_oes_home_bin }}"
+    when: consistentcy_success_isexist.stat.exists == true
+    register: success_status
+    ignore_errors: True
+
+  - name: print res
+    debug:
+      msg: "counter 数据对比一致， 设置oes datacheck 为成功状态"
+    when: success_status is not skipped
+
+- block:
+  - name: is exist consistentcy_failed
+    stat:
+      path: "{{ ansible_path_files_counter_data_broker }}/{{ consistentcy_failed }}"
+    delegate_to: 127.0.0.1
+    run_once: true
+    register: consistentcy_failed_isexist
+
+  - name: site status
+    command: "./oes taskstatus -k DATA_CHECK -S 4 -B {{ target_time.stdout.strip() }} -E {{ target_time.stdout.strip() }} -r {{ diff_html_file }}"
+    args:
+      chdir: "{{ slave_path_oes_home_bin }}"
+    when: consistentcy_failed_isexist.stat.exists == true
+    register: failed_status
+    ignore_errors: True
+
+  - name: print res
+    debug:
+      msg: "counter 数据对比不一致， 设置oes datacheck 为失败状态"
+    when: failed_status is not skipped
+
+  - name: ensure dst_mon_path exist
+    raw: "ssh {{ mon_user }}@{{ mon_host}} mkdir -p {{ dst_mon_path }}"
+    when: consistentcy_failed_isexist.stat.exists == true
+    delegate_to: 127.0.0.1
+    run_once: true
+    ignore_errors: yes
+
+- name: copy html to mon
+  raw: "scp -r {{ ansible_path_files_counter_data_broker }}/{{ diff_html_file }} \
+  {{ mon_user }}@{{ mon_host}}:{{dst_mon_path}}"
+  delegate_to: 127.0.0.1
+  run_once: true
+  ignore_errors: yes

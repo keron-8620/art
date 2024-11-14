@@ -1,0 +1,43 @@
+---
+
+- name: get curr hhmm
+  command: 'date +%H%M'
+  delegate_to: 127.0.0.1
+  register: curr_time_hhmm
+
+- name: get next hhmm
+  command: 'date +%H%M -d "{{ cron_job_cycles }} minutes"'
+  delegate_to: 127.0.0.1
+  register: next_time_hhmm
+
+- name: update counter collector
+  command: date
+  when: "(check_result is failed and \
+         curr_time_hhmm.stdout.strip()|int < task_end_time|int or \
+         ansible_play_hosts != ansible_play_hosts_all) and \
+         not art_run_once"
+  notify:
+    - get file lock
+    - handler update cron job
+    - release file lock
+
+  delegate_to: 127.0.0.1
+  run_once: true
+
+- name: init counter collector
+  command: date
+  when: "(check_result is success or \
+         curr_time_hhmm.stdout.strip()|int >= task_end_time|int) and \
+         ansible_play_hosts == ansible_play_hosts_all or \
+         art_run_once"
+  notify:
+    - get file lock
+    - handler init cron job
+    - release file lock
+
+  delegate_to: 127.0.0.1
+  run_once: true
+
+
+
+

@@ -1,0 +1,9 @@
+---
+- name: mds shutoff
+  command: ./mds shutoff
+  args:
+    chdir: "{{ slave_path_mds_home_bin }}"
+  register: shutoff_res
+  ignore_errors: True
+
+

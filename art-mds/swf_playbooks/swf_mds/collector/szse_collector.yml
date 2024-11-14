@@ -1,0 +1,29 @@
+---
+- hosts: all
+  vars_files:
+    - ../../../inventory/vars_files/common_vars.yml
+    - ./szse_gateway/szse_vars.yml
+    - ../../../automatic.yml
+
+  handlers:
+    - include: ../common/crontab_handlers.yml
+
+  tasks:
+    - include: ../common/get_time.yml
+
+    - include: ../common/before_playbook.yml
+
+    - block:
+      - include: ./szse_gateway/gateway_to_local.yml
+
+      - include: ./szse_gateway/local_to_mds.yml
+
+      - include: ./szse_gateway/szse_checker.yml
+
+      - include: ../common/set_status.yml
+
+      - include: ../common/colct_register.yml
+
+        when: disable_szse_collector == false
+
+    - include: ../common/after_playbook.yml

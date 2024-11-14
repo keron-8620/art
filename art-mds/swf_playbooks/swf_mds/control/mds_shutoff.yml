@@ -1,0 +1,22 @@
+---
+- hosts: all
+  vars_files:
+    - ../../../inventory/vars_files/common_vars.yml
+    - ./shutoff/mds_shutoff_vars.yml
+    - ../../../automatic.yml
+
+  handlers:
+    - include: ../common/crontab_handlers.yml
+
+  tasks:
+    - include: ../common/get_time.yml
+
+    - block:
+
+      - include: ./shutoff/mds_shutoff.yml
+
+      when: disable_mds_shutoff == false
+
+
+
+

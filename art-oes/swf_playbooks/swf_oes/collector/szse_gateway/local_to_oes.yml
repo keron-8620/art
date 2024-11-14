@@ -1,0 +1,16 @@
+---
+
+- name: send szse security files
+  synchronize:
+    src: "{{ ansible_path_files_exchange_szse }}/"
+    dest: "{{ slave_path_oes_home_data_exchange }}"
+    checksum: yes
+  ignore_errors: yes
+
+- name: send szse etf files
+  synchronize:
+    src: "{{ ansible_path_files_exchange_szse_etf }}/"
+    dest: "{{ slave_path_oes_home_data_exchange_szse_etf}}"
+    checksum: yes
+  ignore_errors: yes
+

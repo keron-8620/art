@@ -1,0 +1,79 @@
+---
+
+- name: copy csdc files to oes by remote-dir or network-protocol
+  copy:
+    src: "{{ item }}"
+    dest: "{{ slave_path_oes_home_data_csdc }}"
+    owner: "{{ oesuser }}"
+    group: "{{ oesuser }}"
+    mode: 0644
+  with_fileglob:
+    - "{{ ansible_path_files_csdc }}/*"
+  register: collector_sse_files_result
+  ignore_errors: yes
+
+
+- name: merge csdc counter-files send list
+  set_fact:
+    counter_files: "{{ counter_files | default([]) + [item.name] }}"
+  when: "item.from_way == 'xter'"
+  with_items: "{{ csdc_cp_files }}"
+  delegate_to: 127.0.0.1
+  run_once: true
+
+- name: get counter-files copy list
+  find:
+    paths: "{{ ansible_path_files_counter_data_exchange }}"
+    get_checksum: yes
+    file_type: file
+    use_regex: yes
+    patterns: "{{ counter_files }}"
+  register: counter_send_files
+  delegate_to: 127.0.0.1
+  run_once: true
+
+
+- name: copy xdzq csdc files to oes by xcounter
+  copy:
+    src: "{{ item.path }}"
+    dest: "{{ slave_path_oes_home_data_csdc }}"
+    owner: "{{ oesuser }}"
+    group: "{{ oesuser }}"
+    mode: 0644
+  loop_control:
+    label: "{{ item.path }}"
+  with_items: "{{ counter_send_files.files }}"
+  register: collector_sse_files_result
+  ignore_errors: yes
+
+#- name: get remote-files copy list
+#  set_fact:
+#    remote_files: "{{ remote_files | default([]) + [ansible_path_files_csdc + '/' + item.name] }}"
+#  when: item.from_way in ['dir', 'net']
+#  with_items: "{{ csdc_cp_files }}"
+#
+#- name: get counter-files copy list
+#  set_fact:
+#    counter_files: "{{ counter_files | default([]) + [ansible_path_files_counter_data_exchange + '/' + item.name] }}"
+#  when: item.from_way == 'xter'
+#  with_items: "{{ csdc_cp_files }}"
+
+
+#- name: merge csdc remote-files send list
+#  set_fact:
+#    remote_files: "{{ remote_files | default([]) + [item.name] }}"
+#  when: "item.from_way in ['dir', 'net']"
+#  with_items: "{{ csdc_cp_files }}"
+#  delegate_to: 127.0.0.1
+#  run_once: true
+
+#- name: get remote-files copy list
+#  find:
+#    paths: "{{ ansible_path_files_csdc }}"
+#    get_checksum: yes
+#    file_type: file
+#    use_regex: yes
+#    patterns: "{{ remote_files }}"
+#  register: remote_send_files
+#  delegate_to: 127.0.0.1
+#  run_once: true

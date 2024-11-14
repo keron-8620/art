@@ -1,0 +1,8 @@
+---
+
+- name: load_data
+  command: ./mds load -D -N
+  args:
+    chdir: "{{ slave_path_mds_home_bin }}"
+  ignore_errors: True
+

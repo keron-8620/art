@@ -1,0 +1,16 @@
+---
+- hosts: all
+  vars_files:
+    - ../../../inventory/vars_files/common_vars.yml
+    - ./calendar_gateway/calendar_vars.yml
+    - ../../../automatic.yml
+
+  handlers:
+    - include: ../common/crontab_handlers.yml
+
+  tasks:
+
+    - include: ./calendar_gateway/gateway_to_local.yml
+
+#    - include: ./calendar_gateway/calendar_check.yml
+

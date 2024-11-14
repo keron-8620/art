@@ -1,0 +1,14 @@
+---
+- hosts: all
+  vars_files:
+    - ../../../inventory/vars_files/common_vars.yml
+    - ../../../automatic.yml
+
+  tasks:
+    - include: ../common/get_time.yml
+
+    - block:
+      - include: ./load/load_check.yml
+
+      - include: ./load/oes_load.yml
+        when: check_result is success

@@ -1,0 +1,36 @@
+---
+
+- name: remove OK flag file
+  file:
+    path: "{{ slave_path_mds_home_data_flags }}/{{ item }}"
+    state: absent
+  with_items:
+    - "{{ fetch_ok_flag }}"
+  ignore_errors: yes
+
+
+- name: archive all conf
+  archive:
+    path: "{{ gateway_path_root_conf }}"
+    dest: "{{ gateway_path_root_conf }}/conf_{{ curr_date }}.tar.gz"
+    remove: False
+  delegate_to: mon_host
+  run_once: yes
+  ignore_errors: True
+
+- name: fetch remote conf file
+  fetch:
+    src: "{{ gateway_path_root_conf }}/conf_{{ curr_date }}.tar.gz"
+    dest: "{{ ansible_path_files_conf }}/"
+    flat: yes
+  delegate_to: mon_host
+  run_once: yes
+  ignore_errors: yes
+
+- name: remove the conf tar-pkg
+  file:
+    path: "{{ gateway_path_root_conf }}/conf_{{ curr_date }}.tar.gz"
+    state: absent
+  delegate_to: mon_host
+  run_once: yes
+  ignore_errors: True

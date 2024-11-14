@@ -1,0 +1,16 @@
+---
+- name: write back data
+  command: '{{ oes_write_back_cmd }}'
+  args:
+    chdir: "{{ slave_path_oes_home_bin }}"
+  when: ansible_host!=oes_arbiter_hostname
+  register: wb_result
+  ignore_errors: True
+
+- name: print wb_result
+  debug:
+    var: wb_result
+  delegate_to: 127.0.0.1
+  run_once: true
+
+

@@ -1,0 +1,19 @@
+---
+- hosts: all
+  vars_files:
+    - ../../../inventory/vars_files/common_vars.yml
+    - ./stop/mds_stop_vars.yml
+    - ../../../automatic.yml
+
+  handlers:
+    - include: ../common/crontab_handlers.yml
+
+  tasks:
+    - include: ../common/get_time.yml
+
+    - block:
+
+      - include: ./stop/mds_stop.yml
+
+      when: disable_mds_stop == false
+

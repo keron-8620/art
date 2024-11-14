@@ -1,0 +1,33 @@
+---
+- hosts: all
+  vars_files:
+    - ../../../inventory/vars_files/common_vars.yml
+    - ./conf_gateway/conf_vars.yml
+    - ../../../automatic.yml
+
+  handlers:
+    - include: ../common/crontab_handlers.yml
+
+  tasks:
+    - include: ../common/get_time.yml
+
+    - include: ../common/before_playbook.yml
+
+    - block:
+      - include: ./conf_gateway/gateway_to_local.yml
+
+      - include: ./conf_gateway/local_to_oes.yml
+
+      - include: ./conf_gateway/conf_checker.yml
+
+      - include: ../common/set_status.yml
+
+      - include: ../common/colct_register.yml
+
+        when: not disable_conf_collector
+
+    - include: ../common/after_playbook.yml
+
+
+
+

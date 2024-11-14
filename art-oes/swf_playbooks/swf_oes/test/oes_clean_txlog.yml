@@ -1,0 +1,16 @@
+---
+- hosts: all
+  vars_files:
+    - ../../../inventory/vars_files/common_vars.yml
+    - ../../../automatic.yml
+
+  tasks:
+    - name: please ensure this opeating
+      pause:
+        seconds: 10
+
+    - name: fixed_start_oes
+      file:
+        path: "{{ slave_path_oes_home }}/txlog"
+        state: absent
+      ignore_errors: yes

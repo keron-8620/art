@@ -1,0 +1,8 @@
+---
+cron_job_name: "{{ get_calendar_name }}"
+cron_chinese_name: "{{ get_calendar_ch_name }}"
+cron_job_start_hour: "{{ calendar_start_hour }}"
+cron_job_start_minute: "{{ calendar_start_minute }}"
+cron_job_action: "{{ get_calendar_action }}"
+
+parse_cmd: "{{ python3 }} parse_calendar.py"

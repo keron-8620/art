@@ -1,0 +1,78 @@
+---
+
+- name: site oes fetch sse running
+  command: "./oes taskstatus -k  DATA_FETCH_SSE -S 2"
+  args:
+    chdir: "{{ slave_path_oes_home_bin }}"
+  when: set_oes_status
+  ignore_errors: True
+
+- name: remove OK flag file
+  file:
+    path: "{{ slave_path_oes_home_data_flags }}/{{ item }}"
+    state: absent
+  with_items:
+  - "{{ fetch_sse_ok }}"
+  ignore_errors: yes
+
+- name: get gzlx month
+  raw: echo "obase=16;{{ curr_date[4:6] }}"|bc|tr '[A-Z]' '[a-z]'
+  delegate_to: 127.0.0.1
+  run_once: true
+  register: gzlx_mm
+
+- name: clear sse file
+  block:
+  - name: clear sse_etf directory
+    shell: "cd {{ ansible_path_files_exchange_sse_etf }} && rm -rf *"
+
+  - name: clear sse directory
+    shell: "cd {{ ansible_path_files_exchange_sse }} && rm -rf *"
+  delegate_to: 127.0.0.1
+  run_once: true
+
+- block:
+  - name: fetch remote sse file
+    command: python3 run_command.py "rsync -az --no-r -e 'ssh -p {{ ssh_port }}' {{ sse_user }}@{{ sse_host }}:{{ gateway_path_root_exchange_sse }}/{{ item }} {{ ansible_path_files_exchange_sse }}/"
+    args:
+      chdir: "{{ ansible_path_scripts_files }}"
+    with_items: "{{ sse_cp_files }}"
+    ignore_errors: yes
+
+  - name: fetch remote sse etf file
+    command: python3 run_command.py "rsync -az --no-r -e 'ssh -p {{ ssh_port }}' {{ sse_user }}@{{ sse_host }}:{{ gateway_path_root_exchange_sse_etf }}/{{ item }} {{ ansible_path_files_exchange_sse_etf }}/"
+    args:
+      chdir: "{{ ansible_path_scripts_files }}"
+    with_items: "{{ sse_etf_cp_files }}"
+    ignore_errors: yes
+
+  - name: check remote sse file
+    command: "{{ python3 }} check_md5.py -t sse -s {{ ansible_path_files_exchange_sse }} -d {{ gateway_path_root_exchange_sse }}"
+    args:
+      chdir: "{{ ansible_path_scripts_files }}"
+    ignore_errors: yes
+    register: check
+
+  - name: check remote sse etf file
+    command: "{{ python3 }} check_md5.py -t sse_etf -s {{ ansible_path_files_exchange_sse_etf }} -d {{ gateway_path_root_exchange_sse_etf }}"
+    args:
+      chdir: "{{ ansible_path_scripts_files }}"
+    ignore_errors: yes
+    register: etf_check
+
+  - name: unzip sse files ready
+    command: "{{ python3 }} unzip_sse_files.py {{ ansible_path_files_exchange_sse }}"
+    args:
+      chdir: "{{ ansible_path_scripts_files }}"
+  delegate_to: 127.0.0.1
+  run_once: yes
+
+- debug:
+    msg: "文件完整性验证通过"
+  when: "check is success and etf_check is success"
+  run_once: yes
+
+- debug:
+    msg: "文件完整性验证失败"
+  when: "check is failed or etf_check is failed"
+  run_once: yes

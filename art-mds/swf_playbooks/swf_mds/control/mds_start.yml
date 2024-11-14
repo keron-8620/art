@@ -1,0 +1,24 @@
+---
+- hosts: all
+  vars_files:
+    - ../../../inventory/vars_files/common_vars.yml
+    - ./start/mds_start_vars.yml
+    - ../../../automatic.yml
+
+  handlers:
+    - include: ../common/crontab_handlers.yml
+
+  tasks:
+
+    - include: ../common/get_time.yml
+
+    - block:
+      - include: ./start/mds_check.yml
+
+      - include: ./start/mds_start.yml
+        when: flag_res is success
+
+      when: disable_mds_start == false
+
+
+

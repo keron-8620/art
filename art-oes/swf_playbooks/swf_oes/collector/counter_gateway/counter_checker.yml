@@ -1,0 +1,79 @@
+---
+#
+#- name: check counter files ready
+#  wait_for:
+#    path: "{{ ansible_path_files_counter_data_broker }}/{{item}}"
+#    state: present
+#    timeout: 1
+#  with_items: "{{ counter_check_files }}"
+#  delegate_to: 127.0.0.1
+#  run_once: yes
+#  register: file_check_result
+#  ignore_errors: yes
+
+- name: check counter files ready
+  find:
+    paths: "{{ ansible_path_files_counter_data_broker }}"
+    get_checksum: yes
+    file_type: file
+    use_regex: yes
+    patterns: "{{ item }}"
+  with_items: "{{ counter_check_files }}"
+  register: find_res
+  delegate_to: 127.0.0.1
+  run_once: yes
+
+- name: print counter files ready
+  debug:
+    msg: "file ==> {{ item.item }} | matched ==> {{ item.matched }}"
+  failed_when: "item.matched == 0"
+  with_items: "{{ find_res.results }}"
+  loop_control:
+    label: "{{ item.item }}"
+  ignore_errors: yes
+  register: file_check_result
+  delegate_to: 127.0.0.1
+  run_once: yes
+
+- name: send counter files ready to mon
+  command: "{{ python3 }} mon_log.py -c 'no such file: {{ item.item }}' >> /dev/null"
+  args:
+    chdir: "{{ ansible_path_scripts_files }}"
+  when: "item.matched == 0"
+  with_items: "{{ find_res.results }}"
+  loop_control:
+    label: "{{ item.item }}"
+  ignore_errors: yes
+  delegate_to: 127.0.0.1
+  run_once: yes
+
+- name: check xcounter.ok is exist
+  stat:
+    path: "{{ ansible_path_files_counter_data_broker }}/{{ xcounter_run_fetch_ok }}"
+  delegate_to: 127.0.0.1
+  run_once: yes
+  register: xcounter_run_fetch_ok
+
+- name: create fetch ok flag
+  file:
+    path: "{{ ansible_flag }}/{{ counter_fetch_ok_flag }}"
+    state: touch
+  when: file_check_result is success and xcounter_run_fetch_ok.stat.exists
+  delegate_to: 127.0.0.1
+  run_once: yes
+
+- block:
+  - name: create glzq o32 system ok freezed_ok_flag for xcounter
+    file:
+      path: "{{ ansible_path_files_counter_data_broker }}/{{ xcounter_run_freezed_ok }}"
+      state: touch
+
+  - name: create glzq o32 system freezed_ok_flag for art
+    file:
+      path: "{{ ansible_flag }}/{{ counter_freezed_ok_flag }}"
+      state: touch
+  when: file_check_result is success and xcounter_run_fetch_ok.stat.exists and broker == "glzq"
+  delegate_to: 127.0.0.1
+  run_once: yes
+  ignore_errors: yes
+

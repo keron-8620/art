@@ -1,0 +1,25 @@
+---
+
+- name: "update {{ cron_job_name }}"
+  command: date
+  when: " (check_result is failed or ansible_play_hosts != ansible_play_hosts_all) and \
+          curr_time_hhmm.stdout.strip()|int < task_end_time|int and \
+          not art_run_once"
+  notify:
+    - get file lock
+    - handler update cron job
+    - release file lock
+  delegate_to: 127.0.0.1
+  run_once: true
+
+- name: "init {{ cron_job_name }}"
+  command: date
+  when: " (check_result is success and \
+           ansible_play_hosts == ansible_play_hosts_all) or \
+           curr_time_hhmm.stdout.strip()|int >= task_end_time|int or art_run_once"
+  notify:
+    - get file lock
+    - handler init cron job
+    - release file lock
+  delegate_to: 127.0.0.1
+  run_once: true

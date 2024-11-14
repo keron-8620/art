@@ -1,0 +1,69 @@
+---
+
+- name: rm local counter_freezed_ok_flag
+  file:
+    path: "{{ ansible_path_files_counter_data_broker }}/{{ counter_freezed_ok_flag }}"
+    state: absent
+  delegate_to: 127.0.0.1
+  run_once: true
+
+- name: create gateway path export root 1 directory
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - "{{ gateway_path_export_root_1 }}"
+  delegate_to: 127.0.0.1
+  run_once: true
+  ignore_errors: True
+
+- name: create counter_data_file.ready
+  file:
+    path: "{{ ansible_path_files_counter_data }}/counter_data_file.ready"
+    state: touch
+  delegate_to: 127.0.0.1
+  run_once: true
+  ignore_errors: True
+
+- name: export broker data
+  raw: 'cp -r {{ ansible_path_files_counter_data_broker }}/*.csv {{ gateway_path_export_root_1 }} &&
+          cp -r {{ ansible_path_files_counter_data }}/counter_data_file.ready {{ gateway_path_export_root_1 }}'
+  delegate_to: 127.0.0.1
+  run_once: true
+  ignore_errors: True
+
+- name: transfer2oes asset
+  raw: 'cd {{ ansible_path_files_counter_bin_script }} &&
+        export LD_LIBRARY_PATH=$PWD:$PWD/../lib &&
+        {{ python3 }} $PWD/xcounter2oes_transfer2oes_main.py {{ counter_freeze_cmd_args }} 2> xcounter2oes_transfer2oes_main.log'
+  delegate_to: 127.0.0.1
+  run_once: true
+  register: freezed_counter_result
+  ignore_errors: True
+
+- name: copy counter logs
+  copy:
+    src: "{{ item }}"
+    dest: "{{ slave_path_oes_home_logs }}"
+    owner: "{{ oesuser }}"
+    group: "{{ oesuser }}"
+    mode: 0644
+  with_fileglob:
+    - "{{ ansible_path_files_counter_logs }}/xcounter2oes_*.log"
+
+- name: check xcounter_run_freezed.ok
+  stat:
+    path: "{{ ansible_path_files_counter_data_broker }}/{{ xcounter_run_freezed_ok }}"
+  delegate_to: 127.0.0.1
+  run_once: yes
+  register: xcounter_run_freezed_ok
+
+- name: create freezed_ok_flag
+  file:
+    path: "{{ ansible_flag }}/{{ counter_freezed_ok_flag }}"
+    state: touch
+  when: freezed_counter_result is success and xcounter_run_freezed_ok.stat.exists
+  delegate_to: 127.0.0.1
+  run_once: yes
+
+

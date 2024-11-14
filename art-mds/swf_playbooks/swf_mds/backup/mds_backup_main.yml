@@ -1,0 +1,22 @@
+---
+- hosts: all
+  vars_files:
+    - ../../../inventory/vars_files/common_vars.yml
+    - ./mds_backup_vars.yml
+    - ../../../automatic.yml
+
+  handlers:
+    - include: ../common/crontab_handlers.yml
+
+  tasks:
+    - include: ../common/get_time.yml
+
+    - block:
+
+      - include: ./mds_backup.yml
+
+      - include: ./set_status.yml
+
+      - include: ./mds_backup_register.yml
+
+        when: not disable_mds_backup

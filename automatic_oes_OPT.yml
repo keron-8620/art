@@ -1,0 +1,464 @@
+###################### 说明  ####################
+#  带{{}}， 特殊符号和数字的变量的值，需要加英文双引号， 如 正确： a: "b/{{ c }}", 错误： a: b/{{ c }}
+#  集群设置和系统设置后需要执行cmd/configure.sh， 其他配置修改即生效
+#  为了保证生成的定时任务时间格式上统一， 请添加英文双引号
+#  时间设置如下：
+#  {{ curr_date }}      当前程序获取时间， 可在TradingDate.yml中配置，格式%Y%d%m
+#  {{ pre_trd_date }}   当前程序获取时间的上一个交易日， 格式%Y%d%m
+#  {{ next_trd_date }}   当前程序获取时间的下一个交易日， 格式%Y%d%m
+#################################################
+
+
+############### 系统配置 ########################
+broker: xxxx                                          # 券商配置
+taget: dev                                            # 运行环境配置
+system: oes                                           # 系统配置
+version: xxxxxxxxxxxxxxxxx                            # 系统版本设置　　　
+counter: xxx                                          # 柜台设置 如: HS, DD, JZ_W, JZ_U
+oes_tarpkgs_name: xxx                                 # oes压缩包包名
+oes_pkg_name: xxx                                     # oes 文件名
+xcter_tarpkg_name: xxx                                # xcounter压缩包名
+xcter_pkg_name: xxx                                   # xcounter 文件名
+ssh_user: oesuser                                     # 被控用户
+ssh_port: 22                                          # 集群管理端口（默认为22）
+se: xxxx                                              # 节点配置
+is_option: yes                                        # 是 期权或者两融， 否 现货
+job_run_user: ansible                                 # art执行用户
+trd_check: yes                                        # 校验当前是否为交易日
+skip_md5_check:                                       # 上海产品文件跳过md5校验（都不跳过请填[]）
+#  - "sse"
+  - "sse_etf"
+############### 系统配置 ########################
+
+##################### 集群配置 ##############
+set_num: "01"                                          # 集群号配置
+master_host: "xx.xx.xx.xx"                             # 主机IP设置
+follow_host: "xx.xx.xx.xx"                             # 备机IP设置
+arbiter_host: "xx.xx.xx.xx"                            # 仲裁机IP设置
+
+master_enable: yes
+follow_enable: yes
+arbiter_enable: yes
+
+master_available_cpu: "''"                               # 主机可用cpu核心数，多个用英文逗号分割，例如 0,1,2
+follow_available_cpu: "''"                               # 备机可用cpu核心数，例如 0
+arbiter_available_cpu: "''"                              # 仲裁机可用cpu核心数，为空表示不绑定
+#####################
+
+##################### 灾备配置 ##############
+is_enable_oes_zb: "no"                                 # 是否启用oes灾备环境
+oes_zb_host: "xx.xx.xx.xx"                             # oes灾备机器的ip
+oes_zb_port: 22                                        # oes灾备机器的连接端口
+oes_zb_user: "oesuser"                                 # oes灾备机器的远程用户名
+oes_zb_path: "/home/oesuser/host_01/oes"               # oes灾备机器环境部署的路径
+
+is_enable_mon_zb: "no"                                 # 是否启用mon灾备环境
+mon_zb_host: "xx.xx.xx.xx"                             # mon灾备机器的ip
+mon_zb_port: 22                                        # mon灾备机器的连接端口
+mon_zb_user: "monuser"                                 # mon灾备机器的远程用户名
+mon_zb_path: "/home/monuser/mon"                       # mon灾备机器环境部署的路径
+###########################################
+
+##################### 远程用户设置 ##################
+#注：下面用户如果主机相同，用户不同， 需要在/etc/hosts 在重新命名， 保证一台主机名只对应一个用户
+mon_user: xxxx                                         # 访问mon文件用户
+mon_host: xxxx                                         # mon所在主机ip
+csdc_user: &user xxxx                                  # csdc主机用户
+csdc_host: &host xxxx                                  # csdc主机ip
+sse_user: *user                                        # sse 主机用户
+sse_host: *host                                        # sse 主机ip
+szse_user: *user                                       # szse 主机用户
+szse_host: *host                                       # szse 主机ip
+counter_user: *user                                    # 柜台文件主机用户
+counter_host: *host                                    # 柜台文件主机ip
+##################### 远程用户设置 ##################
+
+##################### 定时任务 配置##################
+calendar_cron_register: yes
+datacheck_cron_register: no
+mon_cron_register: yes
+counter_fetch_cron_register: yes
+counter_distribute_cron_register: yes
+csdc_cron_register: no
+sse_cron_register: yes
+szse_cron_register:  yes
+sse_late_cron_register:  no
+szse_late_cron_register:  no
+conf_cron_register: no
+backup_cron_register: yes
+
+# 以下配置在 oes 非24小时运行时改为 yes
+cron_control_oes_enable: no
+nakedstart_cron_register: "{{ cron_control_oes_enable }}"
+open_cron_register: "{{ cron_control_oes_enable }}"
+close_cron_register: "{{ cron_control_oes_enable }}"
+load_cron_register: "{{ cron_control_oes_enable }}"
+stop_cron_register: "{{ cron_control_oes_enable }}"
+
+##################### 定时任务 配置##################
+
+############## oes control相关时间配置 ##########
+end_time: &end_time "0845"                    # 结束时间
+stop_end_time: "2000"
+# 验证数据完整性
+datacheck_start_hour: "08"
+datacheck_start_minute: "20"
+# 裸启动时间
+nakedstart_start_hour: "07"
+nakedstart_start_minute: "00"
+# 开工时间
+open_start_hour: "09"
+open_start_minute: "00"
+# 收工时间
+close_start_hour: "15"
+close_start_minute: "40"
+# 加载时间
+load_start_hour: "08"
+load_start_minute: "10"
+# 关机时间
+stop_start_hour: "18"
+stop_start_minute: "00"
+# 备份时间
+backup_time_hh: "20"
+backup_time_mm: "00"
+# 文件获取任务重复间隔时间（单位：min）
+cron_job_cycles: "5"
+############## oes control相关时间配置 ##########
+
+################## calendar 相关 ##############
+# 获取交易日历时间
+calendar_start_hour: "06"
+calendar_start_minute: "30"
+################## calendar 相关 ##############
+
+
+################## conf获取 相关 ###############
+gateway_path_root_conf: "/mon/conf"                       # conf 获取目录
+conf_start_hour: "06"                                     # conf 任务开始时间 HH
+conf_start_minute: "00"                                   # conf 任务开始时间 MM
+conf_check_files:                                         # conf 任务检查列表
+  - name: "system.conf.base"
+    dst: "conf/monitor/SET_00"
+  - name: "system.conf.gws"
+    dst: "conf/monitor/SET_00"
+  - name: "ScheduleTasks.csv"
+    dst: "conf/monitor/SET_00"
+################# conf 相关 ###################
+
+################# mon 相关配置 ##################
+mon_deploy_path: /home/monuser/mon                     # mon部署目录
+gateway_path_root_mon: /mnt/quant360/import/mon/oes/01 # mon文件网管目录
+mon_start_hour: "07"                                   # mon文件获取开始时间
+mon_start_minute: "20"
+
+mon_cp_files:                                          # mon 拷贝列表， name 支持使用正则
+  - "ClientInfo.csv"
+  - "TradingCalendar.csv"
+  - "BranchInfo.csv"
+  - "TradingDate.txt"
+  - "BrokerParams.conf"
+  - "system.conf.sse_tdgw"
+  - "system.conf.szse_tgw"
+  - "CustDefaultPermissions.csv"
+  - "DefaultOptBrokerPositionLimit.csv"
+  - "DefaultOptPositionLimit.csv"
+  - "DefaultOptPurchaseLimit.csv"
+  - "DefaultOptOrderLimit.csv"
+  - "IpFilter.csv"
+  - "DefaultOptQualification.csv"
+  - "OptBrokerParams.conf"
+  - "OptCommsModel.csv"
+  - "OptCustComms.csv"
+  - "OptCustMargin.csv"
+  - "OptCombinationStrategyParams.csv"
+  - "FixedFeeInfo.csv"
+  - "OptMarginRatio.csv"
+  - "OptFilingLimit.csv"
+  - "ClientQuota.csv"
+  - "CustBranchInfo.csv"
+  - "PbuInfo.csv"
+  - "UpgradeInfo.conf"
+  - "CustTgwBind.csv"
+
+mon_cp_to_conf_files:                                  # mon 拷贝至conf目录下列表， name 支持使用正则
+  - "system.conf.sse_tdgw"
+  - "system.conf.szse_tgw"
+
+mon_check_files:                                       # mon获取检查文件列表
+  - "ClientInfo.csv"
+  - "TradingCalendar.csv"
+  - "BranchInfo.csv"
+  - "TradingDate.txt"
+  - "BrokerParams.conf"
+  - "DefaultOptBrokerPositionLimit.csv"
+  - "IpFilter.csv"
+  - "OptBrokerParams.conf"
+  - "OptCommsModel.csv"
+  - "OptCustComms.csv"
+  - "FixedFeeInfo.csv"
+  - "OptMarginRatio.csv"
+  - "OptFilingLimit.csv"
+  - "ClientQuota.csv"
+
+################# mon 相关配置 ##################
+
+################# counter 相关配置 ##############
+
+# 期权从 远程拷贝xcounter 文件使用
+gateway_path_root_counter: ""
+# 该配置在业务类型为 期权 时生效， 配置后将从 远端 拉取counter文件到本地
+is_scp_counter_fetch: no
+counter_fetch_cmd_args: "-R"     # 如果 xcounter 0.17.5版本以后此配置项为“-R”, 之前的版本为“”，不可不填！！！
+xcounter_dir_is_exist: yes       # 如果 xcounter 0.15版本 大于0.15.10.3,  xcounter 0.16版本 大于0.16.0.4  执行拷贝
+
+#### 主柜柜台两地交易单边冻结配置
+is_enable_counter_two_places: "disable"              # 是否启用主柜两地交易单边冻结
+other_places_art_host: "xxx.xxx.xxx.xxx"             # 主柜两地交易单边冻结另一节点art主机ip
+other_places_art_port: 22                            # 主柜两地交易单边冻结另一节点art端口
+other_places_art_user: "ansible"                     # 主柜两地交易单边冻结另一节点art用户名
+other_places_art_path: "/home/ansible/art"           # 主柜两地交易单边冻结另一节点art部署路径
+local_art_status_info: "master"                      # 本地art主机身份 master, slave
+
+#### 柜台冻结命令参数
+# 顶点柜台  -CH
+# 恒生柜台  -s1
+# 金证柜台   暂无
+counter_freeze_cmd_args: "-s1"
+counter_fetch_start_hour: "07"                       # 主柜台文件获取开始时间
+counter_fetch_start_minute: "30"
+counter_distribute_start_hour: "07"
+counter_distribute_start_minute: "40"
+counter_cp_files:
+  - "OptCashAcct{{ curr_date[4:] }}.csv"
+  - "OptCashAsset{{ curr_date[4:] }}.csv"
+  - "CustInfo{{ curr_date[4:] }}.csv"
+  - "OptExerciseAssign{{ curr_date[4:] }}.csv"
+  - "OptHoldingInfo{{ curr_date[4:] }}.csv"
+  - "OptInvAcctInfo{{ curr_date[4:] }}.csv"
+  - "OptPositionLimit{{ curr_date[4:] }}.csv"
+  - "OptPurchaseLimit{{ curr_date[4:] }}.csv"
+  - "OptQualification{{ curr_date[4:] }}.csv"
+  - "CustOrigTmplNo{{ curr_date[4:] }}.csv"
+  - "OptUnderlyingCoveredInfo{{ curr_date[4:] }}.csv"
+  - "XCOUNTER.{{ curr_date }}.OK"
+
+counter_check_files:                                   # 主柜台获取检查文件列表
+  - "OptCashAcct{{ curr_date[4:] }}.csv"
+  - "OptCashAsset{{ curr_date[4:] }}.csv"
+  - "CustInfo{{ curr_date[4:] }}.csv"
+  - "OptExerciseAssign{{ curr_date[4:] }}.csv"
+  - "OptHoldingInfo{{ curr_date[4:] }}.csv"
+  - "OptInvAcctInfo{{ curr_date[4:] }}.csv"
+  - "OptPositionLimit{{ curr_date[4:] }}.csv"
+  - "OptPurchaseLimit{{ curr_date[4:] }}.csv"
+  - "OptQualification{{ curr_date[4:] }}.csv"
+  - "OptUnderlyingCoveredInfo{{ curr_date[4:] }}.csv"
+
+##############在 win 运行的xcounter 配置###########
+# 需要在windows 版本上跑 xcounter， 这里如果配置为yes
+run_in_win: no                         # 如果为yes， 将代理到win机器上运行xcounter 脚本
+win_user: "Administrator"              # win 登录用户名
+win_host: "x.x.x.x"                    # win 登录ip
+win_pass: "******"                     # win 登录密码
+win_port: 5985                         # win 登录端口
+counter_src_xcounter2oes: ""           # counter文件源路径
+counter_data_broker: ""                # counter 脚本文件路径
+
+##### 两地交易流水日志########
+capital_flow_log_file: "CounterAllot.{{ curr_date }}.falog"
+################# counter 相关配置 ##############
+
+################ csdc 文件配置 ##################
+
+############### csdc 文件网关 #
+gateway_path_root_csdc_sh: /mnt/quant360/import/csdc  # 上海中登清算文件获取文件网关目录
+gateway_path_root_csdc_sz: /mnt/quant360/import/csdc  #　深圳中登清算文件获取文件网关目录
+############## csdc 文件网关 #
+
+############### csdc 文件ftp #
+csdc_ftp_username: sjbf                               # FTP服务获取用户名
+csdc_ftp_password: "test%4022"                        # FTP服务获取密码
+csdc_ftp_addr: 10.8.11.31                             # FTP服务获取地址
+csdc_ftp_root: KSJY                                   # FTP服务获取根目录
+############### csdc 文件ftp #
+
+csdc_start_hour: "07"                                 # 中登清算文件开始时间　　　　
+csdc_start_minute: "35"
+# from_way  参数说明
+# dir   远程目录
+# net   wget ftp协议拷贝
+# xter  柜台 脚本生成
+# 文件从远程目录拷贝过来时， 支持正则
+csdc_cp_files: []
+
+csdc_check_files: []                                      # 中登清算文件检查列表
+
+################ csdc 文件配置 ##################
+
+############### sse 文件配置 ####################
+gateway_path_root_exchange_sse: /mnt/quant360/import/sse  # 上交所股票文件获取文件网关目录
+gateway_path_root_exchange_sse_etf: /mnt/quant360/import/sse  # 上海etf文件获取文件网关目录
+sse_wait_time_for_complete: 30
+
+sse_start_hour: "08"                                      # 上交所上场数据获取时间
+sse_start_minute: "05"
+
+sse_late_start_hour: "08"                                 # 上交所担保品上场数据获取时间
+sse_late_start_minute: "40"
+
+sse_late_cp_files: []
+sse_late_check_files: []
+
+sse_cp_files:                                             # 上海产品文件拷贝列表， 支持正则
+  - "cpxx0201{{ curr_date[4:] }}.txt"
+  - "cpxx0202{{ curr_date[4:] }}.txt"
+  - "zhcl03{{ curr_date[4:] }}.txt"
+  - "reff03{{ curr_date[4:] }}.txt"
+  - "reff0302{{ curr_date }}.xml"
+  - "bondinfo{{ curr_date }}.txt"
+  - "bondinfo{{ curr_date }}.zip"
+  - "archive_bondinfo{{ curr_date }}.zip"
+
+sse_etf_cp_files: []
+
+sse_check_files:
+  - "cpxx0201{{ curr_date[4:] }}.txt"
+  - "cpxx0202{{ curr_date[4:] }}.txt"
+  - "zhcl03{{ curr_date[4:] }}.txt"
+  - "reff0302{{ curr_date[4:] }}.xml"
+  - "bondinfo{{ curr_date }}.txt"
+
+sse_etf_check_mon_files: no                                  # 是否校验mon维护的上海etf文件
+sse_etf_check_files: []                                      # 上交所获取etf文件检查列表
+
+############### sse 文件配置 ####################
+
+############# szse 文件配置 #####################
+gateway_path_root_exchange_szse: /mnt/quant360/import/szse  # 深交所股票获取文件网关目录
+gateway_path_root_exchange_szse_etf: /mnt/quant360/import/szse  # 深交所etf文件获取文件网关目录
+
+szse_start_hour: "07"                                       # 深交所文件获取开始时间
+szse_start_minute: "30"
+
+szse_late_start_hour: "08"                                  # 深交所担保品文件获取开始时间
+szse_late_start_minute: "40"
+
+szse_late_cp_files: []
+szse_late_check_files: []
+
+szse_cp_files:                                              # 深圳产品文件拷贝列表， 支持正则
+  - "cashauctionparams_{{ curr_date }}.xml"
+  - "securities_{{ curr_date }}.xml"
+  - "bondtradingparams_{{ curr_date }}.xml"
+  - "bondrepoparams_{{ curr_date }}.xml"
+  - "derivativeauctionparams_{{ curr_date }}.xml"
+  - "optioncombinationstrategy_{{ curr_date }}.xml"
+
+szse_etf_cp_files: []
+
+szse_check_files:                                           # 深交所文件获取列表
+  - "cashauctionparams_{{ curr_date }}.xml"
+  - "securities_{{ curr_date }}.xml"
+  - "bondtradingparams_{{ curr_date }}.xml"
+  - "bondrepoparams_{{ curr_date }}.xml"
+  - "derivativeauctionparams_{{ curr_date }}.xml"
+  - "optioncombinationstrategy_{{ curr_date }}.xml"
+
+szse_etf_check_mon_files: no                                  # 是否校验mon维护的深圳etf文件
+szse_etf_check_files: []                                      # 深交所文件检查列表
+
+############# szse 文件配置 #####################
+
+################# 备份配置  #####################
+is_clear_old_backup_files: "disable"                     # 是否启用清除指定的历史文件
+clear_old_backup_datas: 30                               # 指定的历史文件保留天数
+clear_old_backup_key_word_list:                          # 清除历史文件关键字列表
+  - "txlog"
+
+art_oes_backup_list:                                     # 备份列表
+  - bkup_src: "{{ ansible_path_ansible_home }}/logs"     # 要备份路径
+    bkup_name: "art_oes_logs"                            # 备份名称后缀
+    src_remove: "yes"
+  - bkup_src: "{{ ansible_path_ansible_home }}/flag"     # 要备份路径
+    bkup_name: "art_oes_flag"                            # 备份名称后缀
+    src_remove: "yes"
+
+backup_list:                                               # 备份列表
+  - bkup_src: "{{ slave_path_oes_home_conf }}"             # 要备份路径
+    bkup_name: "conf"                                      # 备份名称后缀
+    src_remove: "no"                                       # 是否删除原始路径
+  - bkup_src: "{{ slave_path_oes_home_data }}"
+    bkup_name: "data"
+    src_remove: "yes"
+  - bkup_src: "{{ slave_path_oes_home_logs }}"
+    bkup_name: "logs"
+    src_remove: "yes"
+
+backup_multi_list:
+  - bkup_src: "{{ slave_path_oes_home_txlog }}"
+    bkup_name: "txlog"
+    src_remove: "yes"
+################# 备份配置  #####################
+
+################# mon日志配置 ###################
+monlog_url: "http://192.168.10.210:8080/mon/log/alarm"      # 接口url
+monlog_set_num: "01"                                        # 节点号
+monlog_retry: 3                                             # 发送失败重连次数
+monlog_server_num: "01"                                     # 主机号
+monlog_platform: "OES"                                      # 所属平台
+monlog_module: "art"                                        # 所属模块
+################# mon日志配置 ###################
+
+################# 控制 列表 #####################
+# 该注册列表中为每个定时任务的关闭， 初始值 no，设置yes 为关闭该定时任务， 设置no 为不关闭，（true， false同样有效）
+# 定时任务设置为关闭，脚本可以正常执行 ，不会再注册修改定时任务，已注册的计划任务正常生效
+
+disable_oes_nakedstart: no
+disable_mon_collector: no
+disable_csdc_collector: no
+disable_counter_fetch: no
+disable_counter_distribute: no
+disable_sse_collector: no
+disable_szse_collector: no
+disable_sse_late_collector: no
+disable_szse_late_collector: no
+disable_conf_collector: yes
+disable_oes_datacheck: yes
+disable_oes_load_data: no
+disable_oes_open: no
+disable_oes_close: yes
+disable_oes_stop: no
+disable_oes_reset: no
+disable_oes_shutoff: yes
+disable_oes_thaw: yes
+disable_oes_backup: no
+################# 控制 列表 #####################
+
+################# 可选控制  #####################
+mon_end_time: *end_time
+counter_fetch_end_time: *end_time
+counter_distribute_end_time: *end_time
+csdc_end_time: *end_time
+sse_end_time: *end_time
+szse_end_time: *end_time
+sse_late_end_time: *end_time
+szse_late_end_time: *end_time
+conf_end_time: *end_time
+load_end_time: *end_time
+
+mon_run_once: no
+counter_fetch_run_once: yes
+counter_distribute_run_once: yes
+csdc_run_once: no
+sse_run_once: no
+szse_run_once: no
+sse_late_run_once: no
+szse_late_run_once: no
+load_run_once: no
+conf_run_once: no
+
+##############是否主动通过命令设置oes状态###########
+set_oes_status: no
+################################################
+
+

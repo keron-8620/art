@@ -1,0 +1,39 @@
+
+---
+- hosts: all
+  vars_files:
+    - ../../../inventory/vars_files/common_vars.yml
+    - ../../../.tmp/sse_etf.yml
+    - ./sse_gateway/sse_vars.yml
+    - ../../../automatic.yml
+
+  handlers:
+    - include: ../common/crontab_handlers.yml
+
+  tasks:
+    - include: ../common/get_time.yml
+
+    - include: ../common/before_playbook.yml
+
+    - block:
+      - include: ./sse_gateway/gateway_to_local.yml
+
+      - include: ./sse_gateway/local_to_oes.yml
+        when: check is success and etf_check is success
+
+      - include: ./sse_gateway/local_to_mon.yml
+
+      - include: ./sse_gateway/sse_checker.yml
+
+      - include: ../common/set_status.yml
+
+      - include: ../common/check_OK_flag.yml
+
+      - include: ../common/colct_register.yml
+        when: not disable_sse_collector
+
+    - include: ../common/after_playbook.yml
+
+
+
+

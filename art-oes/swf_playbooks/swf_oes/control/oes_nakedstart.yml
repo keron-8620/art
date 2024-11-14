@@ -1,0 +1,24 @@
+---
+- hosts: all
+  vars_files:
+    - ../../../inventory/vars_files/common_vars.yml
+    - ./nakedstart/oes_nakedstart_vars.yml
+    - ../../../automatic.yml
+
+  handlers:
+    - include: ../common/crontab_handlers.yml
+
+  tasks:
+    - include: ../common/get_time.yml
+
+
+    - block:
+
+      - include: ./nakedstart/oes_nakedstart.yml
+
+      - include: ./nakedstart/site_status.yml
+        when: cron_control_oes_enable
+
+      when: not disable_oes_nakedstart
+
+    - include: ../common/after_playbook.yml

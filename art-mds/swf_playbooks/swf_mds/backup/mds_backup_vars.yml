@@ -1,0 +1,13 @@
+---
+#cron_job_name: "backup_mds"
+#cron_chinese_name: "备份行情系统文件"
+#cron_job_start_hour: "{{ cron_job_mds_backup_time_hh }}"
+#cron_job_start_minute: "{{ cron_job_mds_backup_time_mm }}"
+#cron_job_action: 'cd {{ ansible_path_ansible_home }} && sh cmd/backup.sh'
+#cron_job_cycles: 5
+
+cron_job_name: "{{ backup_name }}"
+cron_chinese_name: "{{ backup_ch_name }}"
+cron_job_start_minute: "{{ backup_time_mm }}"
+cron_job_start_hour: "{{ backup_time_hh }}"
+cron_job_action: "{{ backup_action }}"

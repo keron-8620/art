@@ -1,0 +1,46 @@
+
+
+- name: register all tasks
+  cron:
+    name: "{{ item.name }}--{{ swf_system_version }}-{{ set_num }}  {{ item.ch_name }}"
+    minute: "{{ item.start_minute }}"
+    hour: "{{ item.start_hour }}"
+    day: "*"
+    month: "*"
+    weekday: "1-5"
+    user: "{{ job_run_user }}"
+    job: "{{ item.action }} >> /dev/null"
+    state: present
+  when: item.enable
+  loop_control:
+    label: "{{ item.name }}"
+  with_items:
+    - {"name": "{{ get_calendar_name }}", "ch_name": "{{ get_calendar_ch_name }}", "start_hour": "{{ calendar_start_hour }}", "start_minute": "{{ calendar_start_minute }}", "action": "{{ get_calendar_action }}" , "enable": "{{ get_calendar_register_enable }}"}
+    - {"name": "{{ get_mon_name }}", "ch_name": "{{ get_mon_ch_name }}", "start_hour": "{{ mon_start_hour }}", "start_minute": "{{ mon_start_minute }}", "action": "{{ get_mon_action }}", "enable":"{{ get_mon_register_enable }}"}
+    - {"name": "{{ get_sse_name }}", "ch_name": "{{ get_sse_ch_name }}", "start_hour": "{{ sse_start_hour }}", "start_minute": "{{ sse_start_minute }}", "action": "{{ get_sse_action }}", "enable":"{{ get_sse_register_enable }}"}
+    - {"name": "{{ get_szse_name }}", "ch_name": "{{ get_szse_ch_name }}", "start_hour": "{{ szse_start_hour }}", "start_minute": "{{ szse_start_minute }}", "action": "{{ get_szse_action }}", "enable":"{{ get_szse_register_enable }}"}
+    - {"name": "{{ get_conf_name }}", "ch_name": "{{ get_conf_ch_name }}", "start_hour": "{{ conf_start_hour }}", "start_minute": "{{ conf_start_minute }}", "action": "{{ get_conf_action }}", "enable":"{{ get_conf_register_enable }}"}
+    - {"name": "{{ backup_name }}", "ch_name": "{{ backup_ch_name }}", "start_hour": "{{ backup_time_hh }}", "start_minute": "{{ backup_time_mm }}", "action": "{{ backup_action }}", "enable":"{{ backup_register_enable }}"}
+
+  delegate_to: 127.0.0.1
+  run_once: true
+
+
+- name: unregister the tasks which is not enable
+  cron:
+    name: "{{ item.name }}--{{ swf_system_version }}-{{ set_num }}  {{ item.ch_name }}"
+    state: absent
+    user: "{{ job_run_user }}"
+  when: not item.enable
+  loop_control:
+    label: "{{ item.name }}"
+  with_items:
+    - {"name": "{{ get_calendar_name }}", "ch_name": "{{ get_calendar_ch_name }}", "start_hour": "{{ calendar_start_hour }}", "start_minute": "{{ calendar_start_minute }}", "action": "{{ get_calendar_action }}" , "enable": "{{ get_calendar_register_enable }}"}
+    - {"name": "{{ get_mon_name }}", "ch_name": "{{ get_mon_ch_name }}", "start_hour": "{{ mon_start_hour }}", "start_minute": "{{ mon_start_minute }}", "action": "{{ get_mon_action }}", "enable":"{{ get_mon_register_enable }}"}
+    - {"name": "{{ get_sse_name }}", "ch_name": "{{ get_sse_ch_name }}", "start_hour": "{{ sse_start_hour }}", "start_minute": "{{ sse_start_minute }}", "action": "{{ get_sse_action }}", "enable":"{{ get_sse_register_enable }}"}
+    - {"name": "{{ get_szse_name }}", "ch_name": "{{ get_szse_ch_name }}", "start_hour": "{{ szse_start_hour }}", "start_minute": "{{ szse_start_minute }}", "action": "{{ get_szse_action }}", "enable":"{{ get_szse_register_enable }}"}
+    - {"name": "{{ get_conf_name }}", "ch_name": "{{ get_conf_ch_name }}", "start_hour": "{{ conf_start_hour }}", "start_minute": "{{ conf_start_minute }}", "action": "{{ get_conf_action }}", "enable":"{{ get_conf_register_enable }}"}
+    - {"name": "{{ backup_name }}", "ch_name": "{{ backup_ch_name }}", "start_hour": "{{ backup_time_hh }}", "start_minute": "{{ backup_time_mm }}", "action": "{{ backup_action }}", "enable":"{{ backup_register_enable }}"}
+
+  delegate_to: 127.0.0.1
+  run_once: true

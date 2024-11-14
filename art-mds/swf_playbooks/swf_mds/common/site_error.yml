@@ -1,0 +1,7 @@
+---
+
+- file:
+    path: "{{ ansible_flag }}/{{ flag_error }}"
+    state: touch
+  delegate_to: 127.0.0.1
+  run_once: yes

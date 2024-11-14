@@ -1,0 +1,34 @@
+---
+- hosts: all
+  vars_files:
+    - ../../../inventory/vars_files/common_vars.yml
+    - ./csdc_gateway/csdc_vars.yml
+    - ../../../automatic.yml
+
+  handlers:
+    - include: ../common/crontab_handlers.yml
+
+  tasks:
+    - include: ../common/get_time.yml
+
+    - include: ../common/before_playbook.yml
+
+    - block:
+      - include: ./csdc_gateway/gateway_to_local.yml
+
+      - include: ./csdc_gateway/local_to_oes.yml
+
+      - include: ./csdc_gateway/csdc_checker.yml
+
+      - include: ../common/set_status.yml
+
+      - include: ../common/check_OK_flag.yml
+
+      - include: ../common/colct_register.yml
+        when: not disable_csdc_collector
+
+    - include: ../common/after_playbook.yml
+
+
+
+

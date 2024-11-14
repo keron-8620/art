@@ -1,0 +1,37 @@
+---
+- hosts: all
+  vars_files:
+    - ../../../inventory/vars_files/common_vars.yml
+    - ./counter_gateway/counter_vars.yml
+    - ../../../automatic.yml
+
+  handlers:
+    - include: ../common/crontab_handlers.yml
+
+  tasks:
+    - include: ../common/get_time.yml
+
+    - block:
+      - include: ./counter_gateway/before_playbook.yml
+
+      - include: ./counter_gateway/flag_checker.yml
+
+      - include: ./counter_gateway/counter_collector.yml
+        when: not xcounter_fetch_ok.stat.exists
+
+      - include: ./counter_gateway/counter_checker.yml
+
+      - include: ./counter_gateway/flag_checker.yml
+
+      - include: ./manual_counter_gateway/counter_freezed.yml
+        when: xcounter_fetch_ok.stat.exists and not xcounter_freezed_ok.stat.exists
+
+      - include: ./counter_gateway/flag_checker.yml
+
+      - include: ./counter_gateway/set_status.yml
+
+      - include: ./counter_gateway/task_register.yml
+
+        when: not disable_counter_fetch
+
+    - include: ../common/after_playbook.yml

@@ -1,0 +1,20 @@
+---
+#cron_job_name: "szse_collector"
+#cron_chinese_name: "深圳产品数据获取"
+#cron_job_start_hour: "{{ szse_start_hour }}"
+#cron_job_start_minute: "{{ szse_start_minute }}"
+#cron_job_action: 'cd {{ ansible_path_ansible_home }} && sh cmd/szse.sh'
+
+cron_job_name: "{{ get_szse_name }}"
+cron_chinese_name: "{{ get_szse_ch_name }}"
+cron_job_start_hour: "{{ szse_start_hour }}"
+cron_job_start_minute: "{{ szse_start_minute }}"
+cron_job_action: "{{ get_szse_action }}"
+
+success_cmd: "./mds taskstatus -k DATA_FETCH_SZSE -S 5 -m ''"
+failed_cmd: "./mds taskstatus -k DATA_FETCH_SZSE -S 4 -m '获取数据失败, {{cron_job_cycles}}分钟后尝试重新拉取数据'"
+timeout_cmd: "./mds taskstatus -k DATA_FETCH_SZSE -S 4 -m '获取数据失败, 需人工干预'"
+
+fetch_ok_flag: "{{ fetch_szse_ok }}"
+task_end_time: "{{ szse_end_time }}"
+art_run_once: "{{ szse_run_once }}"

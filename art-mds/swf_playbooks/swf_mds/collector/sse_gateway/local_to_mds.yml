@@ -1,0 +1,20 @@
+---
+
+#- name: send sse file to mds
+# copy:
+#    src: "{{ item }}"
+#    dest: "{{ slave_path_mds_home_data_exchange }}"
+#    owner: "{{ mdsuser }}"
+#    group: "{{ mdsuser }}"
+#    mode: 0644
+#  with_fileglob: "{{ ansible_path_files_sse }}/*"
+#  ignore_errors: yes
+
+
+- name: send sse etf security files
+  synchronize:
+    src: "{{ ansible_path_files_sse }}/"
+    dest: "{{ slave_path_mds_home_data_exchange }}"
+    checksum: yes
+  register: collector_sse_files_result
+  ignore_errors: yes

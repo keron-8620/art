@@ -1,0 +1,69 @@
+---
+
+- name: remove OK flag file
+  file:
+    path: "{{ slave_path_oes_home_data_flags }}/{{ item }}"
+    state: absent
+  with_items:
+    - "{{ fetch_counter_ok }}"
+  ignore_errors: yes
+
+- name: transfer counter data by xcounter2oes.py
+  win_command: "python {{ py_script_main }}"
+  args:
+    chdir: "{{ counter_src_xcounter2oes }}"
+  delegate_to: "{{ win_host }}"
+  run_once: true
+  register: collector_counter_result
+  ignore_errors: yes
+
+- name: find files in dest dir
+  win_find:
+    paths: "{{ counter_data_broker }}"
+  delegate_to: "{{ win_host }}"
+  run_once: true
+  register: win_files
+  ignore_errors: yes
+
+
+- name: clear ansible_path_files_counter_data_broker
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_fileglob: "{{ ansible_path_files_counter_data_broker }}/*"
+  delegate_to: 127.0.0.1
+  run_once: yes
+
+- name: get counter data to local
+  fetch:
+    src: "{{ item.path }}"
+    dest: "{{ ansible_path_files_counter_data_broker }}/"
+    flat: yes
+  with_items: "{{ win_files.files }}"
+  delegate_to: "{{ win_host }}"
+  run_once: yes
+  ignore_errors: yes
+
+- name: backup broker data
+  archive:
+    path: "{{ ansible_path_files_counter_data_broker }}"
+    dest: "{{ ansible_path_files_backup }}/broker_backup_{{ curr_date }}{{ curr_time_hhmm.stdout.strip() }}.tar.gz"
+  delegate_to: 127.0.0.1
+  run_once: yes
+  ignore_errors: yes
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

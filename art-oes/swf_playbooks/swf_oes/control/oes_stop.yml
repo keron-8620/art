@@ -1,0 +1,29 @@
+---
+- hosts: all
+  vars_files:
+    - ../../../inventory/vars_files/common_vars.yml
+    - ./stop/oes_stop_vars.yml
+    - ../../../automatic.yml
+
+  handlers:
+    - include: ../common/crontab_handlers.yml
+
+  tasks:
+    - include: ../common/get_time.yml
+
+    - block:
+      - include: ./stop/oes_stop.yml
+
+      - include: ./stop/site_status.yml
+        when: cron_control_oes_enable
+
+      - include: ./stop/oes_stop_register.yml
+        when: cron_control_oes_enable
+
+      when: not disable_oes_stop
+
+    - include: ../common/after_playbook.yml
+
+
+
+

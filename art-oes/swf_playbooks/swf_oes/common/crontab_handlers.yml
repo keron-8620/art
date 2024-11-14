@@ -1,0 +1,73 @@
+---
+#- name: handler update cron job
+#  cron:
+#    name: "{{ cron_job_name }}--{{ swf_system_version }}-{{ set_num }}  {{ cron_chinese_name }}"
+#    minute: "{{ next_time_hhmm.stdout[2:4] }}"
+#    hour: "{{ next_time_hhmm.stdout[:2] }}"
+#    day: "{{ curr_date.stdout[6:8] }}"
+#    month: "{{ curr_date.stdout[4:6] }}"
+#    weekday: "*"
+#    job: "{{ cron_job_action}} >> logs/{{ cron_job_name }}-{{ swf_system_version }}-{{ set_num }}-{{curr_date }}.log 2>&1"
+#    state: present
+#  delegate_to: 127.0.0.1
+#  run_once: true
+#
+#
+#- name: handler init cron job
+#  cron:
+#    name: "{{ cron_job_name }}--{{ swf_system_version }}-{{ set_num }}  {{ cron_chinese_name }}"
+#    minute: "{{ cron_job_start_minute }}"
+#    hour: "{{ cron_job_start_hour }}"
+#    day: "{{ next_trd_date.stdout[6:8] }}"
+#    month: "{{ next_trd_date.stdout[4:6] }}"
+#    weekday: "*"
+#    job: "{{ cron_job_action}} >> logs/{{ cron_job_name }}-{{ swf_system_version }}-{{ set_num }}-{{next_trd_date }}.log 2>&1"
+#    state: present
+#  delegate_to: 127.0.0.1
+#  run_once: true
+
+
+- name: get file lock
+  command: "{{ python3 }} scripts/sync.py"
+  args:
+    chdir: "{{ ansible_path_ansible_home }}"
+  delegate_to: 127.0.0.1
+  run_once: true
+  register: file_lock_name
+
+- name: handler update cron job
+  cron:
+    name: "{{ cron_job_name }}--{{ swf_system_version }}-{{ set_num }}  {{ cron_chinese_name }}"
+    minute: "{{ next_time_hhmm.stdout[2:4] }}"
+    hour: "{{ next_time_hhmm.stdout[:2] }}"
+    day: "*"
+    month: "*"
+    weekday: "1-5"
+    job: "{{ cron_job_action}} >> /dev/null"
+    state: present
+  delegate_to: 127.0.0.1
+  run_once: true
+
+
+- name: handler init cron job
+  cron:
+    name: "{{ cron_job_name }}--{{ swf_system_version }}-{{ set_num }}  {{ cron_chinese_name }}"
+    minute: "{{ cron_job_start_minute }}"
+    hour: "{{ cron_job_start_hour }}"
+    day: "*"
+    month: "*"
+    weekday: "1-5"
+    job: "{{ cron_job_action}} >> /dev/null"
+    state: present
+  delegate_to: 127.0.0.1
+  run_once: true
+
+
+- name: release file lock
+  file:
+    path: "/tmp/{{ file_lock_name.stdout.strip() }}"
+    state: absent
+  delegate_to: 127.0.0.1
+  run_once: true
+
+

@@ -1,0 +1,7 @@
+---
+
+- name: load_data
+  command: ./oes load -D -N
+  args:
+    chdir: "{{ slave_path_oes_home_bin }}"
+  ignore_errors: True

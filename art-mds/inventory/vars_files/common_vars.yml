@@ -1,0 +1,114 @@
+
+swf_system_version: "{{ system }}-{{ version }}"
+python3: /usr/local/bin/python3                        # python3 执行程序目录
+#ansible_python_interpreter: "/usr/local/bin/python3"
+#ansible_playbook_python: "/usr/local/bin/python3"
+
+#################mds压缩包修改文件名######################################
+mds_tarpkg_name: mds.tar.gz
+#################mds压缩包修改文件名######################################
+
+#################ansible工作目录相关文件位置####################
+bin_file_src: "{{ ansible_path_files_bin }}/{{ mds_tarpkg_name }}"
+ansible_path_backup: "{{ ansible_path_ansible_home }}/backup"
+ansible_path_files: "{{ ansible_path_ansible_home }}/files"
+ansible_path_tmp: "{{ ansible_path_ansible_home }}/.tmp"
+ansible_path_files_mon: "{{ ansible_path_files }}/mon"
+ansible_path_files_sse: "{{ ansible_path_files }}/sse"
+ansible_path_files_szse: "{{ ansible_path_files }}/szse"
+ansible_path_files_conf: "{{ ansible_path_files }}/conf"
+
+ansible_path_files_bin: "{{ ansible_path_files }}/bin"
+ansible_path_scripts_files: "{{ ansible_path_ansible_home }}/scripts"
+
+ansible_path_files_config: "{{ ansible_path_files }}/config"
+cfg_file_src_spec: "{{ ansible_path_files_config }}/{{ se }}/{{ spec_config_file_dir }}"
+cfg_file_src_all: "{{ ansible_path_files_config }}/{{ se }}/all"
+
+# 其他
+ansible_flag: "{{ ansible_path_ansible_home }}/flag"
+
+#################被控机相关目录##############################
+slave_path_mds_home: "{{ slave_path_user_home }}/{{ mds_pkg_name }}"
+slave_path_mds_home_art: "{{ slave_path_mds_home }}/art"
+slave_path_mds_home_bin: "{{ slave_path_mds_home }}/bin"
+slave_path_mds_home_bin_script: "{{ slave_path_mds_home }}/bin/script"
+slave_path_mds_home_conf: "{{ slave_path_mds_home }}/conf"
+slave_path_mds_home_data: "{{ slave_path_mds_home }}/data"
+slave_path_mds_home_txlog: "{{ slave_path_mds_home }}/txlog"
+slave_path_mds_home_logs: "{{ slave_path_mds_home }}/logs"
+slave_path_mds_home_data_flags: "{{ slave_path_mds_home_data }}/flags"
+slave_path_mds_home_data_exchange: "{{ slave_path_mds_home_data }}/exchange"
+slave_path_mds_home_data_monitor: "{{ slave_path_mds_home_data }}/monitor"
+#################被控机相关目录##############################
+
+############ oes 主 备 仲裁 的主机配置和mon的配置###########
+mds_master_hostname: "swf-oes-{{ broker }}-{{ taget }}-{{ master_host }}"
+mds_follow_hostname: "swf-oes-{{ broker }}-{{ taget }}-{{ follow_host }}"
+mds_arbiter_hostname: "swf-oes-{{ broker }}-{{ taget }}-{{ arbiter_host }}"
+# mon_file_host: "swf-oes-{{ broker }}-{{ taget }}-{{ mon_host }}"
+#########################################################
+mdsuser: "mdsuser"
+cron_job_cycles: 5
+mds_backup_path: "{{ slave_path_user_home }}/backup/{{ mds_pkg_name }}"
+
+
+############################## flag 文件名 ##########################
+flag_name: "{{ cron_job_name }}_{{ curr_date }}"
+flag_success: "{{ flag_name }}.success"
+flag_failed: "{{ flag_name }}.failed"
+flag_retry: "{{ flag_name }}.retry"
+flag_running: "{{ flag_name }}.running"
+flag_timeout: "{{ flag_name }}.timeout"
+flag_error: "{{ flag_name }}.error"
+
+fetch_counter_ok: "DATA_FETCH_COUNTER.{{ curr_date }}.OK"
+fetch_mon_ok: "DATA_FETCH_MON.{{ curr_date }}.OK"
+fetch_sse_ok: "DATA_FETCH_SSE.{{ curr_date }}.OK"
+fetch_szse_ok: "DATA_FETCH_SZSE.{{ curr_date }}.OK"
+fetch_csdc_ok: "DATA_FETCH_SDC.{{ curr_date }}.OK"
+data_check_ok: "DATA_CHECK.{{ curr_date }}.OK"
+fetch_conf_ok: "DATA_FETCH_CFG.{{ curr_date }}.OK"
+
+fetch_counter_ok_writing: "DATA_FETCH_COUNTER.{{ curr_date }}.OK.writing"
+fetch_mon_ok_writing: "DATA_FETCH_MON.{{ curr_date }}.OK.writing"
+fetch_sse_ok_writing: "DATA_FETCH_SSE.{{ curr_date }}.OK.writing"
+fetch_szse_ok_writing: "DATA_FETCH_SZSE.{{ curr_date }}.OK.writing"
+fetch_csdc_ok_writing: "DATA_FETCH_SDC.{{ curr_date }}.OK.writing"
+data_check_ok_writing: "DATA_CHECK.{{ curr_date }}.OK.writing"
+fetch_conf_ok_writing: "DATA_FETCH_CFG.{{ curr_date }}.OK.writing"
+
+#####################################################################
+
+############################# 任务名 ################################
+get_calendar_name: "calendar_collector"
+get_calendar_ch_name: "交易日历到本地"
+get_calendar_action: 'cd {{ ansible_path_ansible_home }} && sh cmd/calendar_converter.sh'
+get_calendar_register_enable: "{{ calendar_cron_register }}"
+
+get_mon_name: "mon_collector"
+get_mon_ch_name: "行情客户数据获取"
+get_mon_action: 'cd {{ ansible_path_ansible_home }} && sh cmd/mon.sh'
+get_mon_register_enable: "{{ mon_cron_register }}"
+
+get_sse_name: "sse_collector"
+get_sse_ch_name: "上海产品文件获取"
+get_sse_action: 'cd {{ ansible_path_ansible_home }} && sh cmd/sse.sh'
+get_sse_register_enable: "{{ sse_cron_register }}"
+
+get_szse_name: "szse_collector"
+get_szse_ch_name: "深圳产品文件获取"
+get_szse_action: 'cd {{ ansible_path_ansible_home }} && sh cmd/szse.sh'
+get_szse_register_enable: "{{ szse_cron_register }}"
+
+get_conf_name: "conf_collector"
+get_conf_ch_name: "配置文件获取"
+get_conf_action: 'cd {{ ansible_path_ansible_home }} && sh cmd/conf.sh'
+get_conf_register_enable: "{{ conf_cron_register }}"
+
+backup_name: "mds_backup"
+backup_ch_name: "备份行情系统"
+backup_action: 'cd {{ ansible_path_ansible_home }} && sh cmd/backup.sh'
+backup_register_enable: "{{ backup_cron_register }}"
+
+####################################################################

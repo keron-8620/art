@@ -1,0 +1,43 @@
+- name: copy data/broker to other art
+  command: python3 run_command.py "rsync -az -e 'ssh -p {{ other_places_art_port }}' {{ ansible_path_files_counter_data_broker }}/ {{ other_places_art_user }}@{{ other_places_art_host }}:{{ other_places_art_path }}/files/counter/data/broker"
+  args:
+    chdir: "{{ ansible_path_scripts_files }}"
+  delegate_to: 127.0.0.1
+  run_once: true
+  ignore_errors: yes
+  register: broker_dep_result
+
+- name: copy xcounter2oes.log to other art
+  command: python3 run_command.py "rsync -az -e 'ssh -p {{ other_places_art_port }}' {{ ansible_path_files_counter_logs }}/ {{ other_places_art_user }}@{{ other_places_art_host }}:{{ other_places_art_path }}/files/counter/logs"
+  args:
+    chdir: "{{ ansible_path_scripts_files }}"
+  delegate_to: 127.0.0.1
+  run_once: true
+  ignore_errors: yes
+  register: logs_dep_result
+
+- name: check two place other art counter files data/broker md5
+  command: "{{ python3 }} check_md5.py -t counter -s {{ ansible_path_files_counter_data_broker }} -d {{ other_places_art_path }}/files/counter/data/broker"
+  args:
+    chdir: "{{ ansible_path_scripts_files }}"
+  delegate_to: 127.0.0.1
+  run_once: yes
+  register: check_counter_data_broker_md5
+  ignore_errors: yes
+
+- name: check two place other art counter files logs md5
+  command: "{{ python3 }} check_md5.py -t counter -s {{ ansible_path_files_counter_logs }} -d {{ other_places_art_path }}/files/counter/logs"
+  args:
+    chdir: "{{ ansible_path_scripts_files }}"
+  delegate_to: 127.0.0.1
+  run_once: yes
+  register: check_counter_logs_md5
+  ignore_errors: yes
+
+- name: touch other art counter fetch success flag
+  shell: "ssh -p {{ other_places_art_port }} {{ other_places_art_user }}@{{ other_places_art_host }} 'cd {{ other_places_art_path }}/flag && touch {{ counter_fetch_ok_flag }} && touch {{ counter_freezed_ok_flag }}'"
+  delegate_to: 127.0.0.1
+  run_once: yes
+  when: check_counter_data_broker_md5.rc == 0 and check_counter_logs_md5.rc == 0
+  ignore_errors: yes
+

@@ -1,0 +1,72 @@
+---
+- name: create ansible directory
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - "{{ ansible_path_ansible_home }}"
+    - "{{ ansible_path_files }}"
+    - "{{ ansible_path_tmp }}"
+    - "{{ ansible_path_files_config }}"
+    - "{{ ansible_path_files_config }}/{{ se }}"
+    - "{{ ansible_path_files_config_all }}"
+    - "{{ ansible_path_files_mon }}"
+    - "{{ ansible_path_backup }}"
+#    - "{{ ansible_path_files_conf }}"
+    - "{{ ansible_path_files_bin }}"
+    - "{{ ansible_path_files_backup }}"
+    - "{{ ansible_path_files_config }}"
+    - "{{ ansible_path_files_counter }}"
+    - "{{ ansible_path_files_counter_default }}"
+    - "{{ ansible_path_files_counter_conf }}"
+    - "{{ ansible_path_files_counter_logs }}"
+    - "{{ ansible_path_files_counter_data }}"
+    - "{{ ansible_path_files_counter_bin_script }}"
+    - "{{ ansible_path_files_counter_bin_lib }}"
+    - "{{ ansible_path_files_counter_data_broker }}"
+    - "{{ ansible_path_files_exchange }}"
+    - "{{ ansible_path_files_exchange_sse }}"
+    - "{{ ansible_path_files_exchange_szse }}"
+    - "{{ ansible_path_files_exchange_sse_etf }}"
+    - "{{ ansible_path_files_exchange_szse_etf }}"
+    - "{{ ansible_path_files_counter_default }}"
+    - "{{ ansible_path_files_csdc }}"
+    - "{{ ansible_path_files_logs }}"
+  delegate_to: 127.0.0.1
+  run_once: true
+
+- name: create ansible spec directory
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - "{{ ansible_path_files_config_spec }}"
+  delegate_to: 127.0.0.1
+
+- name: create slave directory
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - "{{ slave_path_user_home }}"
+    - "{{ slave_path_oes_home }}"
+    - "{{ slave_path_oes_home_art }}"
+    - "{{ slave_path_oes_home_bin }}"
+    - "{{ slave_path_oes_home_conf }}"
+    - "{{ slave_path_oes_home_data }}"
+    - "{{ slave_path_oes_home_txlog }}"
+    - "{{ slave_path_oes_home_logs }}"
+    - "{{ slave_path_oes_home_data_flags }}"
+    - "{{ slave_path_oes_home_data_broker }}"
+    - "{{ slave_path_oes_home_data_exchange }}"
+    - "{{ slave_path_oes_home_data_monitor }}"
+    - "{{ slave_path_oes_home_data_exchange_sse_etf }}"
+    - "{{ slave_path_oes_home_data_exchange_szse_etf }}"
+
+- name: create mon script directory
+  file:
+    path: "{{ mon_deploy_path }}/art"
+    state: directory
+  delegate_to: mon_host
+  run_once: yes
+  ignore_errors: yes

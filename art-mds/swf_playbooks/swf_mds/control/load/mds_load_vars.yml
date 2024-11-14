@@ -1,0 +1,9 @@
+---
+cron_job_name: "mds_load_data"
+cron_chinese_name: "行情系统加载数据"
+cron_job_start_hour: "{{ cron_job_mds_load_time_hh }}"
+cron_job_start_minute: "{{ cron_job_mds_load_time_mm }}"
+cron_job_action: 'cd {{ ansible_path_ansible_home }} && sh cmd/load.sh'
+
+
+

@@ -1,0 +1,46 @@
+---
+
+- name: transfer2oes asset
+  win_command: 'python xcounter2oes_transfer2oes_main.py -s1 2> xcounter2oes_transfer2oes_main.log'
+  args:
+    chdir: "{{ counter_src_xcounter2oes }}"
+  delegate_to: "{{ win_host }}"
+  run_once: true
+  register: freezed_counter_result
+  ignore_errors: True
+
+- name: get counter data to local
+  fetch:
+    src: "{{ counter_data_broker }}/{{ xcounter_run_freezed_ok }}"
+    dest: "{{ ansible_path_files_counter_data_broker }}/"
+    flat: yes
+  delegate_to: "{{ win_host }}"
+  run_once: yes
+  ignore_errors: yes
+
+- name: copy counter logs
+  copy:
+    src: "{{ item }}"
+    dest: "{{ slave_path_oes_home_logs }}"
+    owner: "{{ oesuser }}"
+    group: "{{ oesuser }}"
+    mode: 0644
+  with_fileglob:
+    - "{{ ansible_path_files_counter_logs }}/xcounter2oes_*.log"
+  ignore_errors: True
+
+- name: check xcounter_run_freezed.ok
+  stat:
+    path: "{{ ansible_path_files_counter_data_broker }}/{{ xcounter_run_freezed_ok }}"
+  delegate_to: 127.0.0.1
+  run_once: yes
+  register: xcounter_run_freezed_ok
+
+- name: create freezed_ok_flag
+  file:
+    path: "{{ ansible_flag }}/{{ freezed_ok_flag }}"
+    state: touch
+  when: freezed_counter_result is success and xcounter_run_freezed_ok.stat.exists
+  delegate_to: 127.0.0.1
+  run_once: yes
+  ignore_errors: yes

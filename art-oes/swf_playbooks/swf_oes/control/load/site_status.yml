@@ -1,0 +1,26 @@
+---
+- name: touch load_data success
+  file:
+    path: "{{ ansible_flag }}/{{ flag_success }}"
+    state: touch
+  when: "all_check_result is not skipped and check_result is success and ansible_play_hosts == ansible_play_hosts_all"
+  delegate_to: 127.0.0.1
+  run_once: true
+
+- name: touch load_data retry
+  file:
+    path: "{{ ansible_flag }}/{{ flag_retry }}"
+    state: touch
+  when: "(all_check_result is skipped or ansible_play_hosts != ansible_play_hosts_all) and \
+          curr_time_hhmm.stdout.strip()|int <= load_end_time|int "
+  delegate_to: 127.0.0.1
+  run_once: true
+
+- name: touch load_data timeout
+  file:
+    path: "{{ ansible_flag }}/{{ flag_timeout }}"
+    state: touch
+  when: "all_check_result is skipped or ansible_play_hosts != ansible_play_hosts_all and \
+         curr_time_hhmm.stdout.strip()|int > load_end_time|int"
+  delegate_to: 127.0.0.1
+  run_once: true

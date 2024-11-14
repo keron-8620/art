@@ -1,0 +1,16 @@
+---
+- name: touch open success
+  file:
+    path: "{{ ansible_flag }}/{{ flag_success }}"
+    state: touch
+  when: open_res is success
+  delegate_to: 127.0.0.1
+  run_once: true
+
+- name: touch open failed
+  file:
+    path: "{{ ansible_flag }}/{{ flag_failed }}"
+    state: touch
+  when: open_res is not success
+  delegate_to: 127.0.0.1
+  run_once: true
