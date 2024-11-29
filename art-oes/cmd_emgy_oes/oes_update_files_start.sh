@@ -136,7 +136,13 @@ _update_files() {
 
         cd ../broker
         for file in *; do
-            if [[ "\$file" =~ ([0-9]{8}) ]]; then
+            if [[ "\$file" =~ (TRANSFER|XCOUNTER)\.([0-9]{8})\.(OK) ]]; then
+                new_file="\${BASH_REMATCH[1]}.\${nowdate_full}.\${BASH_REMATCH[3]}"
+                mv "\$file" "\$new_file"
+            elif [[ "\$file" =~ ([0-9]{4}) ]]; then
+                new_file=\$(echo "\$file" | sed -E "s/[0-9]{4}/\$nowdate/")
+                mv "\$file" "\$new_file"
+            elif [[ "\$file" =~ ([0-9]{8}) ]]; then
                 new_file=\$(echo "\$file" | sed -E "s/[0-9]{8}/\$nowdate_full/")
                 mv "\$file" "\$new_file"
             fi
@@ -179,7 +185,13 @@ EOF
 
         cd ../broker
         for file in *; do
-            if [[ "\$file" =~ ([0-9]{8}) ]]; then
+            if [[ "\$file" =~ (TRANSFER|XCOUNTER)\.([0-9]{8})\.(OK) ]]; then
+                new_file="\${BASH_REMATCH[1]}.\${nowdate_full}.\${BASH_REMATCH[3]}"
+                mv "\$file" "\$new_file"
+            elif [[ "\$file" =~ ([0-9]{4}) ]]; then
+                new_file=\$(echo "\$file" | sed -E "s/[0-9]{4}/\$nowdate/")
+                mv "\$file" "\$new_file"
+            elif [[ "\$file" =~ ([0-9]{8}) ]]; then
                 new_file=\$(echo "\$file" | sed -E "s/[0-9]{8}/\$nowdate_full/")
                 mv "\$file" "\$new_file"
             fi
@@ -222,7 +234,13 @@ EOF
 
         cd ../broker
         for file in *; do
-            if [[ "\$file" =~ ([0-9]{8}) ]]; then
+            if [[ "\$file" =~ (TRANSFER|XCOUNTER)\.([0-9]{8})\.(OK) ]]; then
+                new_file="\${BASH_REMATCH[1]}.\${nowdate_full}.\${BASH_REMATCH[3]}"
+                mv "\$file" "\$new_file"
+            elif [[ "\$file" =~ ([0-9]{4}) ]]; then
+                new_file=\$(echo "\$file" | sed -E "s/[0-9]{4}/\$nowdate/")
+                mv "\$file" "\$new_file"
+            elif [[ "\$file" =~ ([0-9]{8}) ]]; then
                 new_file=\$(echo "\$file" | sed -E "s/[0-9]{8}/\$nowdate_full/")
                 mv "\$file" "\$new_file"
             fi
