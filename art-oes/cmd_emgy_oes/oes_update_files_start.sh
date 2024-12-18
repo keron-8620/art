@@ -125,7 +125,7 @@ _update_files() {
             elif [[ "\$file" =~ ^dbp[0-9]{4}\.txt$ ]]; then
                 new_file="dbp\$nowdate.txt"
                 mv "\$file" "\$new_file"
-            elif [[ "\$file" =~ ^gzlx\\.[0-9]{3}$ ]]; then
+            elif [[ "\$file" =~ ^gzlx\\.[0-9a-c][0-9]{2}$ ]]; then
                 new_file="gzlx.\$current_month_code\$current_day"
                 mv "\$file" "\$new_file"
             elif [[ "\$file" =~ ([0-9]{8}) ]]; then
@@ -174,7 +174,7 @@ EOF
             elif [[ "\$file" =~ ^dbp[0-9]{4}\.txt$ ]]; then
                 new_file="dbp\$nowdate.txt"
                 mv "\$file" "\$new_file"
-            elif [[ "\$file" =~ ^gzlx\\.[0-9]{3}$ ]]; then
+            elif [[ "\$file" =~ ^gzlx\\.[0-9a-c][0-9]{2}$ ]]; then
                 new_file="gzlx.\$current_month_code\$current_day"
                 mv "\$file" "\$new_file"
             elif [[ "\$file" =~ ([0-9]{8}) ]]; then
@@ -223,7 +223,7 @@ EOF
             elif [[ "\$file" =~ ^dbp[0-9]{4}\.txt$ ]]; then
                 new_file="dbp\$nowdate.txt"
                 mv "\$file" "\$new_file"
-            elif [[ "\$file" =~ ^gzlx\\.[0-9]{3}$ ]]; then
+            elif [[ "\$file" =~ ^gzlx\\.[0-9a-c][0-9]{2}$ ]]; then
                 new_file="gzlx.\$current_month_code\$current_day"
                 mv "\$file" "\$new_file"
             elif [[ "\$file" =~ ([0-9]{8}) ]]; then
