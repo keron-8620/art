@@ -1,7 +1,7 @@
 version_info:
     "name": "art"
-    "version": "0.16.0.3.45-release"
-    "update_time": "20240802"
+    "version": "0.16.0.3.46-release"
+    "update_time": "20250117"
     "config_file": "automatic.yml"
     "ansible_config_file": 'ansible.cfg'
     "rely_on_python3": "/usr/local/bin/python3.6"

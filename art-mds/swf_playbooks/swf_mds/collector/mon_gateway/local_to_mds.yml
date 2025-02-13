@@ -17,3 +17,13 @@
     src: "{{ ansible_path_files_mon }}/"
     dest: "{{ slave_path_mds_home_data_monitor }}"
   ignore_errors: yes
+
+- name: send clientinfo file to umds
+  command: python3 run_command.py "rsync -az --no-r -e 'ssh -p {{ ssh_port }}' {{ ansible_path_files_mon }}/{{ item }} {{ umon_user }}@{{ umon_host }}:{{ umon_deploy_path }}/"
+  args:
+    chdir: "{{ ansible_path_scripts_files }}"
+  with_items: "{{ umon_cp_files_list }}"
+  when: umon_enable == true
+  delegate_to: 127.0.0.1
+  run_once: yes
+  ignore_errors: yes

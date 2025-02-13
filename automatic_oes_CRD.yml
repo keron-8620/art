@@ -74,7 +74,7 @@ counter_host: *host                                    # 柜台文件主机ip
 ##################### 远程用户设置 ##################
 
 ##################### 定时任务 配置##################
-calendar_cron_register: yes
+calendar_cron_register: no
 datacheck_cron_register: no
 mon_cron_register: yes
 counter_fetch_cron_register: yes

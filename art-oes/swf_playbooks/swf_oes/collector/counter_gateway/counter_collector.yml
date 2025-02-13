@@ -28,10 +28,9 @@
   run_once: true
 
 
-- name: rm local counter/bin_lib, bin/script, conf, data, logs
+- name: rm local counter/bin_lib, bin/script, conf, data
   command: "find {{ item }} -type f -delete"
   with_items:
-    - "{{ ansible_path_files_counter }}"
     - "{{ ansible_path_files_counter_bin_script }}"
     - "{{ ansible_path_files_counter_bin_lib }}"
     - "{{ ansible_path_files_counter_conf }}"

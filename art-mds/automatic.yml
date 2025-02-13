@@ -57,7 +57,7 @@ mon_zb_path: "/home/monuser/mon"                       # mon灾备机器环境�
 ###########################################
 
 ##################### 定时任务 配置##################
-calendar_cron_register: yes
+calendar_cron_register: no
 mon_cron_register: yes
 sse_cron_register: yes
 szse_cron_register:  yes
@@ -78,6 +78,8 @@ sse_user: *user
 sse_host: *host
 szse_user: *user
 szse_host: *host
+umon_user: *user
+umon_host: *host
 ##################### 远程用户设置 ##################
 
 ################## conf获取 相关 ###############
@@ -117,6 +119,13 @@ mon_check_files_list:
   - "TradingCalendar.csv"
   - "TradingDate.txt"
 ###################### mon设置 #################
+
+###################### umon设置 #################
+umon_enable: true
+umon_cp_files_list:
+  - "ClientInfo.csv"
+umon_deploy_path: "/home"
+###################### umon设置 #################
 
 ###################### sse设置 #################
 gateway_path_root_sse: /mnt/quant360/import/sse

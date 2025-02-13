@@ -9,7 +9,7 @@ nowdate_full_hms=$(date +%Y%m%d%H%M%S)
 current_day=$(date +%d)
 current_month=$(date +%m)
 if (( 10#$current_month <= 9 )); then
-    current_month_code=$current_month
+    current_month_code=${current_month#0}
 else
     case $current_month in
         10) current_month_code="a" ;;
@@ -131,6 +131,9 @@ _update_files() {
             elif [[ "\$file" =~ ([0-9]{8}) ]]; then
                 new_file=\$(echo "\$file" | sed -E "s/[0-9]{8}/\$nowdate_full/")
                 mv "\$file" "\$new_file"
+            elif [[ "\$file" =~ ^reff[0-9]{6}\.txt$ ]]; then
+                new_file=\$(echo "\$file" | sed -E "s/[0-9]{4}\\.txt$/\$nowdate.txt/")
+                mv "\$file" "\$new_file"
             fi
         done
 
@@ -147,6 +150,17 @@ _update_files() {
                 mv "\$file" "\$new_file"
             fi
         done
+                awk -F'|' 'BEGIN {OFS="|"} /^[0-9]+\|/ { \$5 = "测试账号" substr(\$1, length(\$1)-3); } { print > FILENAME }' "CustInfo\$nowdate.csv"
+                cp -r InvAcctInfo\$nowdate.csv InvAcctInfo\$nowdate.csv_old
+
+                awk -F'|' 'BEGIN {OFS="|"} {custId = \$1; mktId = \$4; if (mktId == 1) { \$2 = "A1" substr(custId, 1, 4) substr(custId, length(custId)-3); } else if (mktId == 2) { \$2 = "00" substr(custId, 1, 4) substr(custId, length(custId)-3); } print \$0 }' InvAcctInfo\$nowdate.csv > temp && mv temp InvAcctInfo\$nowdate.csv
+                
+                awk -F'|' 'BEGIN {OFS="|"} NR==FNR {custId[\$2]=\$1; next} {invAcctId=\$1; mktId=\$2; if (invAcctId in custId) {custIdValue=custId[invAcctId]; if (mktId == 2) { \$1 = "00" substr(custIdValue, 1, 4) substr(custIdValue, length(custIdValue) - 3) } else if (mktId == 1) { \$1 = "A1" substr(custIdValue, 1, 4) substr(custIdValue, length(custIdValue) - 3) }}} 1' InvAcctInfo\$nowdate.csv_old StkHoldingInfo\$nowdate.csv > temp && mv temp StkHoldingInfo\$nowdate.csv
+
+                awk -F'|' 'BEGIN {OFS="|"} {custId = \$1; mktId = \$3; if (mktId == 1) { \$2 = "A1" substr(custId, 1, 4) substr(custId, length(custId)-3); } else if (mktId == 2) { \$2 = "00" substr(custId, 1, 4) substr(custId, length(custId)-3); } print \$0 }' SubscriptionQuota\$nowdate.csv > temp && mv temp SubscriptionQuota\$nowdate.csv
+
+        cd ../monitor
+                awk -F'|' 'BEGIN {OFS="|"} /^[^#]/ { gsub(/^[ \t]+|[ \t]+$/, "", \$23); \$6 = "测试账号" substr(\$23, length(\$23)-3, 4); } { print }' ClientInfo.csv > temp.csv && mv temp.csv ClientInfo.csv
 
         cd ../flags
         for file in *; do
@@ -179,6 +193,9 @@ EOF
                 mv "\$file" "\$new_file"
             elif [[ "\$file" =~ ([0-9]{8}) ]]; then
                 new_file=\$(echo "\$file" | sed -E "s/[0-9]{8}/\$nowdate_full/")
+                mv "\$file" "\$new_file"
+            elif [[ "\$file" =~ ^reff[0-9]{6}\.txt$ ]]; then
+                new_file=\$(echo "\$file" | sed -E "s/[0-9]{4}\\.txt$/\$nowdate.txt/")
                 mv "\$file" "\$new_file"
             fi
         done
@@ -229,11 +246,15 @@ EOF
             elif [[ "\$file" =~ ([0-9]{8}) ]]; then
                 new_file=\$(echo "\$file" | sed -E "s/[0-9]{8}/\$nowdate_full/")
                 mv "\$file" "\$new_file"
+            elif [[ "\$file" =~ ^reff[0-9]{6}\.txt$ ]]; then
+                new_file=\$(echo "\$file" | sed -E "s/[0-9]{4}\\.txt$/\$nowdate.txt/")
+                mv "\$file" "\$new_file"
             fi
         done
 
         cd ../broker
         for file in *; do
+            
             if [[ "\$file" =~ (TRANSFER|XCOUNTER)\.([0-9]{8})\.(OK) ]]; then
                 new_file="\${BASH_REMATCH[1]}.\${nowdate_full}.\${BASH_REMATCH[3]}"
                 mv "\$file" "\$new_file"
