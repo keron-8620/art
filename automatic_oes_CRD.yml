@@ -3,9 +3,9 @@
 #  集群设置和系统设置后需要执行cmd/configure.sh， 其他配置修改即生效
 #  为了保证生成的定时任务时间格式上统一， 请添加英文双引号
 #  时间设置如下：
-#  {{ curr_date }}      当前程序获取时间， 可在TradingDate.yml中配置，格式%Y%d%m
-#  {{ pre_trd_date }}   当前程序获取时间的上一个交易日， 格式%Y%d%m
-#  {{ next_trd_date }}   当前程序获取时间的下一个交易日， 格式%Y%d%m
+#  {{ curr_date }}      当前程序获取时间， 可在TradingDate.yml中配置，格式%Y%m%d
+#  {{ pre_trd_date }}   当前程序获取时间的上一个交易日， 格式%Y%m%d
+#  {{ next_trd_date }}   当前程序获取时间的下一个交易日， 格式%Y%m%d
 #################################################
 
 
@@ -64,17 +64,17 @@ mon_zb_path: "/home/monuser/mon"                       # mon灾备机器环境�
 mon_user: xxxx                                         # 访问mon文件用户
 mon_host: xxxx                                         # mon所在主机ip
 csdc_user: &user xxxx                                  # csdc主机用户
-csdc_host: &host xxxx                       # csdc主机ip
+csdc_host: &host xxxx                                  # csdc主机ip
 sse_user: *user                                        # sse 主机用户
-sse_host: *host                                      # sse 主机ip
-szse_user: *user                                     # szse 主机用户
+sse_host: *host                                        # sse 主机ip
+szse_user: *user                                       # szse 主机用户
 szse_host: *host                                       # szse 主机ip
 counter_user: *user                                    # 柜台文件主机用户
 counter_host: *host                                    # 柜台文件主机ip
 ##################### 远程用户设置 ##################
 
 ##################### 定时任务 配置##################
-calendar_cron_register: no
+calendar_cron_register: yes
 datacheck_cron_register: no
 mon_cron_register: yes
 counter_fetch_cron_register: yes
@@ -148,8 +148,8 @@ conf_check_files:                                         # conf 任务检查列
 ################# mon 相关配置 ##################
 mon_deploy_path: /home/monuser/mon                     # mon部署目录
 gateway_path_root_mon: /mnt/quant360/import/mon/oes/01 # mon文件网管目录
-mon_start_hour: "08"                                   # mon文件获取开始时间
-mon_start_minute: "00"
+mon_start_hour: "07"                                   # mon文件获取开始时间
+mon_start_minute: "20"
 
 mon_cp_files:                                          # mon 拷贝列表， name 支持使用正则
   - "ClientInfo.csv"
@@ -189,8 +189,15 @@ mon_cp_files:                                          # mon 拷贝列表， nam
   - "UpgradeInfo.conf"
   - "CrdInvAcctInfoExt.csv"
   - "MajorStockHolderInfo.csv"
+  - "CrdCollateralInfo.csv"
+  - "CrdCustCollateralInfo.csv"
+  - "CrdCustMaintenanceParams.csv"
   - "CustTradingLimits.csv"
   - "CustTgwBind.csv"
+  - "SecurityAbnormalFluctuation.csv"
+  - "StockFilingInfo.csv"
+  - "MajorStockHolderRole.csv"
+  - "MajorStockHolderTradingLimits.csv"
   - "CrdCustDebtRepayMode.csv"
   - "CustDefaultPermissions.csv"
 
@@ -277,6 +284,8 @@ counter_cp_files:
   - "CrdInterestModel{{ curr_date[4:] }}.csv"
   - "CrdCustInterest{{ curr_date[4:] }}.csv"
   - "SecurityPriceEarnings{{ curr_date[4:] }}.csv"
+  - "CustEquityCompensation{{ curr_date[4:] }}.csv"
+  - "CrdCollateralClass{{ curr_date[4:] }}.csv"
 
 counter_check_files:                                   # 主柜台获取检查文件列表
   - "CrdCashAcct{{ curr_date[4:] }}.csv"
@@ -400,6 +409,7 @@ sse_check_files:
   - "bondinfo{{ curr_date }}.txt"
 
 sse_etf_check_mon_files: no                                  # 是否校验mon维护的上海etf文件
+sse_etf_check_counter_files: no                              # 是否校验主柜维护的上海etf文件
 sse_etf_check_files: []                                      # 上交所获取etf文件检查列表
 #  - "(510050{{ curr_date[4:] }}2.(?i)ETF|50__{{ curr_date[4:] }}.(?i)ETF)"
 #  - "(510300{{ curr_date[4:] }}2.(?i)ETF|510300{{ curr_date[4:] }}.(?i)ETF)"
@@ -441,6 +451,7 @@ szse_check_files:                                           # 深交所文件检
   - "rightsissueparams_{{ curr_date }}.xml"
 
 szse_etf_check_mon_files: no                                   # 是否校验mon维护的深圳etf文件
+szse_etf_check_counter_files: no                               # 是否校验主柜维护的深圳etf文件
 szse_etf_check_files: []                                       # 深交所文件检查列表
 #  - "pcf_159001_{{ curr_date }}.xml"
 #  - "pcf_159003_{{ curr_date }}.xml"

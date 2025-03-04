@@ -3,9 +3,9 @@
 #  集群设置和系统设置后需要执行cmd/configure.sh， 其他配置修改即生效
 #  为了保证生成的定时任务时间格式上统一， 请添加英文双引号
 #  时间设置如下：
-#  {{ curr_date }}      当前程序获取时间， 可在TradingDate.yml中配置，格式%Y%d%m
-#  {{ pre_trd_date }}   当前程序获取时间的上一个交易日， 格式%Y%d%m
-#  {{ next_trd_date }}   当前程序获取时间的下一个交易日， 格式%Y%d%m
+#  {{ curr_date }}      当前程序获取时间， 可在TradingDate.yml中配置，格式%Y%m%d
+#  {{ pre_trd_date }}   当前程序获取时间的上一个交易日， 格式%Y%m%d
+#  {{ next_trd_date }}   当前程序获取时间的下一个交易日， 格式%Y%m%d
 #################################################
 
 
@@ -74,7 +74,7 @@ counter_host: *host                                    # 柜台文件主机ip
 ##################### 远程用户设置 ##################
 
 ##################### 定时任务 配置##################
-calendar_cron_register: no
+calendar_cron_register: yes
 datacheck_cron_register: no
 mon_cron_register: yes
 counter_fetch_cron_register: yes
@@ -240,6 +240,7 @@ counter_cp_files:
   - "OptQualification{{ curr_date[4:] }}.csv"
   - "CustOrigTmplNo{{ curr_date[4:] }}.csv"
   - "OptUnderlyingCoveredInfo{{ curr_date[4:] }}.csv"
+  - "OptCombinationHoldingInfo{{ curr_date[4:] }}.csv"
   - "XCOUNTER.{{ curr_date }}.OK"
 
 counter_check_files:                                   # 主柜台获取检查文件列表
@@ -253,6 +254,7 @@ counter_check_files:                                   # 主柜台获取检查�
   - "OptPurchaseLimit{{ curr_date[4:] }}.csv"
   - "OptQualification{{ curr_date[4:] }}.csv"
   - "OptUnderlyingCoveredInfo{{ curr_date[4:] }}.csv"
+  - "OptCombinationHoldingInfo{{ curr_date[4:] }}.csv"
 
 ##############在 win 运行的xcounter 配置###########
 # 需要在windows 版本上跑 xcounter， 这里如果配置为yes
@@ -329,6 +331,7 @@ sse_check_files:
   - "bondinfo{{ curr_date }}.txt"
 
 sse_etf_check_mon_files: no                                  # 是否校验mon维护的上海etf文件
+sse_etf_check_counter_files: no                              # 是否校验主柜维护的上海etf文件
 sse_etf_check_files: []                                      # 上交所获取etf文件检查列表
 
 ############### sse 文件配置 ####################
@@ -365,6 +368,7 @@ szse_check_files:                                           # 深交所文件获
   - "optioncombinationstrategy_{{ curr_date }}.xml"
 
 szse_etf_check_mon_files: no                                  # 是否校验mon维护的深圳etf文件
+szse_etf_check_counter_files: no                              # 是否校验主柜维护的深圳etf文件
 szse_etf_check_files: []                                      # 深交所文件检查列表
 
 ############# szse 文件配置 #####################

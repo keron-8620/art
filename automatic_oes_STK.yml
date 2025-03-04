@@ -3,9 +3,9 @@
 #  集群设置和系统设置后需要执行cmd/configure.sh， 其他配置修改即生效
 #  为了保证生成的定时任务时间格式上统一， 请添加英文双引号
 #  时间设置如下：
-#  {{ curr_date }}      当前程序获取时间， 可在TradingDate.yml中配置，格式%Y%d%m
-#  {{ pre_trd_date }}   当前程序获取时间的上一个交易日， 格式%Y%d%m
-#  {{ next_trd_date }}   当前程序获取时间的下一个交易日， 格式%Y%d%m
+#  {{ curr_date }}      当前程序获取时间， 可在TradingDate.yml中配置，格式%Y%m%d
+#  {{ pre_trd_date }}   当前程序获取时间的上一个交易日， 格式%Y%m%d
+#  {{ next_trd_date }}   当前程序获取时间的下一个交易日， 格式%Y%m%d
 #################################################
 
 
@@ -15,7 +15,7 @@ taget: dev                                            # 运行环境配置
 system: oes                                           # 系统配置
 version: xxxxxxxxxxxxxxxxx                            # 系统版本设置　　　
 counter: xxx                                          # 柜台设置 如: HS, DD, JZ_W, JZ_U
-oes_tarpkgs_name: xxx                                  # oes压缩包包名
+oes_tarpkgs_name: xxx                                 # oes压缩包包名
 oes_pkg_name: xxx                                     # oes 文件名
 xcter_tarpkg_name: xxx                                # xcounter压缩包名
 xcter_pkg_name: xxx                                   # xcounter 文件名
@@ -74,7 +74,7 @@ counter_host: *host                                    # 柜台文件主机ip
 ##################### 远程用户设置 ##################
 
 ##################### 定时任务 配置##################
-calendar_cron_register: no
+calendar_cron_register: yes
 datacheck_cron_register: no
 mon_cron_register: yes
 counter_fetch_cron_register: yes
@@ -185,6 +185,8 @@ mon_cp_files:                                          # mon 拷贝列表， nam
   - "PbuInfo.csv"
   - "UpgradeInfo.conf"
   - "CustTgwBind.csv"
+  - "SecurityAbnormalFluctuation.csv"
+  - "StockFilingInfo.csv"
 
 mon_cp_to_conf_files:                                  # mon 拷贝至conf目录下列表， name 支持使用正则
   - "system.conf.sse_tdgw"
@@ -298,7 +300,7 @@ csdc_cp_files:
     se: "sz"
     from_way: "dir"
 
-csdc_check_files:                                     # 中登清算文件检查列表
+csdc_check_files:                                         # 中登清算文件检查列表
 #- ipogh.txt
 #- zqy.dbf
 #- SJSKS.DBF
@@ -323,7 +325,6 @@ sse_late_check_files: []
 sse_cp_files:                                             # 上海产品文件拷贝列表， 支持正则
   - "cpxx0201{{ curr_date[4:] }}.txt"
   - "cpxx0202{{ curr_date[4:] }}.txt"
-  - "reff03{{ curr_date[4:] }}.txt"
   - "fjy{{ curr_date }}.txt"
   - "gzlx.{{ gzlx_mm.stdout[:-1].lstrip('0') }}{{ curr_date[-2:] }}"
   - "bondinfo{{ curr_date }}.txt"
@@ -336,7 +337,6 @@ sse_etf_cp_files:                                         # 上海etf产品文�
   - "*{{ curr_date[4:] }}.etf"
   - "*{{ curr_date[4:] }}2.etf"
   - "*{{ curr_date[4:] }}.ETF"
-  - "*{{ curr_date[4:] }}2.ETF"
   - "*{{ curr_date[4:] }}2.ETF"
   - "ssepcf_*_{{ curr_date }}.xml"
 
