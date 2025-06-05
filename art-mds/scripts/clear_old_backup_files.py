@@ -2,6 +2,7 @@ import os
 import optparse
 import time
 import shutil
+from datetime import datetime, date
 
 
 def main():
@@ -10,6 +11,7 @@ def main():
         "-p",
         "--path",
         type="string",
+        default='logs',
     )
     parser.add_option(
         "-k",
@@ -20,15 +22,16 @@ def main():
     parser.add_option(
         "-d",
         "--clear_data",
-        type="string",
+        type="int",
     )
     (options, _) = parser.parse_args()
     path = options.path.strip()
     key_word = options.key_word.strip()
-    clear_data = options.clear_data.strip()
-    today = int(time.strftime('%Y%m%d', time.localtime()))
+    clear_data = options.clear_data
+    today = date.today()
     for log_data in os.listdir(path):
-        if today - int(log_data) > int(clear_data):
+        d = datetime.strptime(log_data, '%Y%m%d').date()
+        if (today - d).days > clear_data:
             log_dir = os.path.join(path, log_data)
             for filename in os.listdir(log_dir):
                 if key_word.lower() in filename.lower():

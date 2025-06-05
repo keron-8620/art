@@ -1,12 +1,1 @@
-﻿1. 修复load的时候touch load_data success报错
-2. 修复配置文件disable_oes_backup和disable_mds_backup配置为yes时不执行备份操作的问题
-3. 修复md5校验时，当文件夹下手动创建目录时异常的问题
-4. 修复执行上海产品文件拉取时，任务结束后可能会出现的进程残留问题
-
-
-
-1. 修复校验md5码脚本队列取数据完成后不退出的问题
-2. 新增oes的txlog多进程备份, 修复mds的txlog多进程备份，并依据最新的性能优化方案调整了多进程数量
-注意： automatic.yml中需要新增配置项backup_multi_list，
-并将backup_list配置项中txlog相关配置移动到backup_multi_list下，
-具体配置可参考本包的配置文件或之前的mds多进程备份txlog配置
+﻿1. 修复了mds在bakcup时清空过期的txlog备份文件时，日期计算错误的问题
