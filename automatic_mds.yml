@@ -180,7 +180,7 @@ cron_job_cycles: 5
 ################### cron mds ####################
 
 ################# 备份配置  #####################
-is_clear_old_backup_files: "disable"                     # 是否启用清除指定的历史文件
+is_clear_old_backup_files: "no"                          # 是否启用清除指定的历史文件
 clear_old_backup_datas: 30                               # 指定的历史文件保留天数
 clear_old_backup_key_word_list:                          # 清除历史文件关键字列表
   - "txlog"

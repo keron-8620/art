@@ -1,6 +1,5 @@
 import os
 import optparse
-import time
 import shutil
 from datetime import datetime, date
 
@@ -11,7 +10,6 @@ def main():
         "-p",
         "--path",
         type="string",
-        default='logs',
     )
     parser.add_option(
         "-k",
@@ -44,4 +42,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

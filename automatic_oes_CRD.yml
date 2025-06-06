@@ -243,7 +243,7 @@ counter_fetch_cmd_args: "-R"     # 如果 xcounter 0.17.5版本以后此配置�
 xcounter_dir_is_exist: yes       # 如果 xcounter 0.15版本 大于0.15.10.3,  xcounter 0.16版本 大于0.16.0.4  执行拷贝
 
 #### 主柜柜台两地交易单边冻结配置
-is_enable_counter_two_places: "disable"              # 是否启用主柜两地交易单边冻结
+is_enable_counter_two_places: "no"                   # 是否启用主柜两地交易单边冻结
 other_places_art_host: "xxx.xxx.xxx.xxx"             # 主柜两地交易单边冻结另一节点art主机ip
 other_places_art_port: 22                            # 主柜两地交易单边冻结另一节点art端口
 other_places_art_user: "ansible"                     # 主柜两地交易单边冻结另一节点art用户名
@@ -458,7 +458,7 @@ szse_etf_check_files: []                                       # 深交所文件
 ############# szse 文件配置 #####################
 
 ################# 备份配置  #####################
-is_clear_old_backup_files: "disable"                     # 是否启用清除指定的历史文件
+is_clear_old_backup_files: "no"                     # 是否启用清除指定的历史文件
 clear_old_backup_datas: 30                               # 指定的历史文件保留天数
 clear_old_backup_key_word_list:                          # 清除历史文件关键字列表
   - "txlog"

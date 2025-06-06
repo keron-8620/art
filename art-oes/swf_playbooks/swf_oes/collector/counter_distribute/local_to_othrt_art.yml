@@ -40,4 +40,3 @@
   run_once: yes
   when: check_counter_data_broker_md5.rc == 0 and check_counter_logs_md5.rc == 0
   ignore_errors: yes
-

@@ -1,1 +1,4 @@
 ﻿1. 修复了mds在bakcup时清空过期的txlog备份文件时，日期计算错误的问题
+2. 将配置文件中的配置项
+    is_clear_old_backup_files由disable改成no
+    is_enable_counter_two_places由disable改成no

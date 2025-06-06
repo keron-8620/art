@@ -20,7 +20,7 @@
         when: xcounter_freezed_ok.stat.exists
 
       - include: ./counter_distribute/local_to_othrt_art.yml
-        when: xcounter_freezed_ok.stat.exists and is_enable_counter_two_places == 'enable' and local_art_status_info == 'master'
+        when: xcounter_freezed_ok.stat.exists and is_enable_counter_two_places == 'yes' and local_art_status_info == 'master'
 
       - include: ./counter_distribute/counter_checker.yml
 
