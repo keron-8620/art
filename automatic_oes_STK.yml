@@ -185,6 +185,7 @@ mon_cp_files:                                          # mon 拷贝列表， nam
   - "PbuInfo.csv"
   - "UpgradeInfo.conf"
   - "CustTgwBind.csv"
+  - "MiddlePlatformSystemInfo.csv"
   - "SecurityAbnormalFluctuation.csv"
   - "StockFilingInfo.csv"
 
@@ -326,6 +327,7 @@ sse_cp_files:                                             # 上海产品文件�
   - "cpxx0201{{ curr_date[4:] }}.txt"
   - "cpxx0202{{ curr_date[4:] }}.txt"
   - "fjy{{ curr_date }}.txt"
+  - "jfjy{{ curr_date }}.xml"
   - "gzlx.{{ gzlx_mm.stdout[:-1].lstrip('0') }}{{ curr_date[-2:] }}"
   - "bondinfo{{ curr_date }}.txt"
   - "bondinfo{{ curr_date }}.zip"
@@ -341,9 +343,10 @@ sse_etf_cp_files:                                         # 上海etf产品文�
   - "ssepcf_*_{{ curr_date }}.xml"
 
 sse_check_files:
-  - "fjy{{ curr_date }}.txt"
   - "cpxx0201{{ curr_date[4:] }}.txt"
   - "cpxx0202{{ curr_date[4:] }}.txt"
+  - "fjy{{ curr_date }}.txt"
+  - "jfjy{{ curr_date }}.xml"
   - "gzlx.{{ gzlx_mm.stdout[:-1].lstrip('0') }}{{ curr_date[-2:] }}"
   - "bondinfo{{ curr_date }}.txt"
 
@@ -395,7 +398,7 @@ szse_etf_check_files:                                       # 深交所文件检
 ############# szse 文件配置 #####################
 
 ################# 备份配置  #####################
-is_clear_old_backup_files: "no"                     # 是否启用清除指定的历史文件
+is_clear_old_backup_files: "no"                          # 是否启用清除指定的历史文件
 clear_old_backup_datas: 30                               # 指定的历史文件保留天数
 clear_old_backup_key_word_list:                          # 清除历史文件关键字列表
   - "txlog"

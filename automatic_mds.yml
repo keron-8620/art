@@ -78,7 +78,7 @@ sse_user: *user
 sse_host: *host
 szse_user: *user
 szse_host: *host
-umon_user: *user
+umon_user: root
 umon_host: *host
 ##################### 远程用户设置 ##################
 
@@ -122,7 +122,7 @@ mon_check_files_list:
 umon_enable: true
 umon_cp_files_list:
   - "ClientInfo.csv"
-umon_deploy_path: "/home"
+umon_deploy_path: "/root/fpga/xilinx_client_demo"
 ###################### umon设置 #################
 
 ###################### sse设置 #################

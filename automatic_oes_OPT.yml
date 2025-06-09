@@ -179,6 +179,7 @@ mon_cp_files:                                          # mon 拷贝列表， nam
   - "PbuInfo.csv"
   - "UpgradeInfo.conf"
   - "CustTgwBind.csv"
+  - "MiddlePlatformSystemInfo.csv"
 
 mon_cp_to_conf_files:                                  # mon 拷贝至conf目录下列表， name 支持使用正则
   - "system.conf.sse_tdgw"
@@ -374,7 +375,7 @@ szse_etf_check_files: []                                      # 深交所文件�
 ############# szse 文件配置 #####################
 
 ################# 备份配置  #####################
-is_clear_old_backup_files: "no"                     # 是否启用清除指定的历史文件
+is_clear_old_backup_files: "no"                          # 是否启用清除指定的历史文件
 clear_old_backup_datas: 30                               # 指定的历史文件保留天数
 clear_old_backup_key_word_list:                          # 清除历史文件关键字列表
   - "txlog"

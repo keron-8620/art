@@ -3,9 +3,9 @@
 #  集群设置和系统设置后需要执行cmd/configure.sh， 其他配置修改即生效
 #  为了保证生成的定时任务时间格式上统一， 请添加英文双引号
 #  时间设置如下：
-#  {{ curr_date }}      当前程序获取时间， 可在TradingDate.yml中配置，格式%Y%d%m
-#  {{ pre_trd_date }}   当前程序获取时间的上一个交易日， 格式%Y%d%m
-#  {{ next_trd_date }}   当前程序获取时间的下一个交易日， 格式%Y%d%m
+#  {{ curr_date }}      当前程序获取时间， 可在TradingDate.yml中配置，格式%Y%m%d
+#  {{ pre_trd_date }}   当前程序获取时间的上一个交易日， 格式%Y%m%d
+#  {{ next_trd_date }}   当前程序获取时间的下一个交易日， 格式%Y%m%d
 #################################################
 
 
@@ -15,7 +15,7 @@ taget: dev                                            # 运行环境配置
 system: oes                                           # 系统配置
 version: xxxxxxxxxxxxxxxxx                            # 系统版本设置　　　
 counter: xxx                                          # 柜台设置 如: HS, DD, JZ_W, JZ_U
-oes_tarpkgs_name: xxx                                  # oes压缩包包名
+oes_tarpkgs_name: xxx                                 # oes压缩包包名
 oes_pkg_name: xxx                                     # oes 文件名
 xcter_tarpkg_name: xxx                                # xcounter压缩包名
 xcter_pkg_name: xxx                                   # xcounter 文件名
@@ -74,7 +74,7 @@ counter_host: *host                                    # 柜台文件主机ip
 ##################### 远程用户设置 ##################
 
 ##################### 定时任务 配置##################
-calendar_cron_register: no
+calendar_cron_register: yes
 datacheck_cron_register: no
 mon_cron_register: yes
 counter_fetch_cron_register: yes
@@ -185,6 +185,9 @@ mon_cp_files:                                          # mon 拷贝列表， nam
   - "PbuInfo.csv"
   - "UpgradeInfo.conf"
   - "CustTgwBind.csv"
+  - "MiddlePlatformSystemInfo.csv"
+  - "SecurityAbnormalFluctuation.csv"
+  - "StockFilingInfo.csv"
 
 mon_cp_to_conf_files:                                  # mon 拷贝至conf目录下列表， name 支持使用正则
   - "system.conf.sse_tdgw"
@@ -213,7 +216,7 @@ counter_fetch_cmd_args: "-R"     # 如果 xcounter 0.17.5版本以后此配置�
 xcounter_dir_is_exist: yes       # 如果 xcounter 0.15版本 大于0.15.10.3,  xcounter 0.16版本 大于0.16.0.4  执行拷贝
 
 #### 主柜柜台两地交易单边冻结配置
-is_enable_counter_two_places: "disable"              # 是否启用主柜两地交易单边冻结
+is_enable_counter_two_places: "no"                   # 是否启用主柜两地交易单边冻结
 other_places_art_host: "xxx.xxx.xxx.xxx"             # 主柜两地交易单边冻结另一节点art主机ip
 other_places_art_port: 22                            # 主柜两地交易单边冻结另一节点art端口
 other_places_art_user: "ansible"                     # 主柜两地交易单边冻结另一节点art用户名
@@ -298,7 +301,7 @@ csdc_cp_files:
     se: "sz"
     from_way: "dir"
 
-csdc_check_files: []                                     # 中登清算文件检查列表
+csdc_check_files:                                         # 中登清算文件检查列表
 #- ipogh.txt
 #- zqy.dbf
 #- SJSKS.DBF
@@ -323,8 +326,8 @@ sse_late_check_files: []
 sse_cp_files:                                             # 上海产品文件拷贝列表， 支持正则
   - "cpxx0201{{ curr_date[4:] }}.txt"
   - "cpxx0202{{ curr_date[4:] }}.txt"
-  - "reff03{{ curr_date[4:] }}.txt"
   - "fjy{{ curr_date }}.txt"
+  - "jfjy{{ curr_date }}.xml"
   - "gzlx.{{ gzlx_mm.stdout[:-1].lstrip('0') }}{{ curr_date[-2:] }}"
   - "bondinfo{{ curr_date }}.txt"
   - "bondinfo{{ curr_date }}.zip"
@@ -340,9 +343,10 @@ sse_etf_cp_files:                                         # 上海etf产品文�
   - "ssepcf_*_{{ curr_date }}.xml"
 
 sse_check_files:
-  - "fjy{{ curr_date }}.txt"
   - "cpxx0201{{ curr_date[4:] }}.txt"
   - "cpxx0202{{ curr_date[4:] }}.txt"
+  - "fjy{{ curr_date }}.txt"
+  - "jfjy{{ curr_date }}.xml"
   - "gzlx.{{ gzlx_mm.stdout[:-1].lstrip('0') }}{{ curr_date[-2:] }}"
   - "bondinfo{{ curr_date }}.txt"
 
@@ -394,7 +398,7 @@ szse_etf_check_files:                                       # 深交所文件检
 ############# szse 文件配置 #####################
 
 ################# 备份配置  #####################
-is_clear_old_backup_files: "disable"                     # 是否启用清除指定的历史文件
+is_clear_old_backup_files: "no"                          # 是否启用清除指定的历史文件
 clear_old_backup_datas: 30                               # 指定的历史文件保留天数
 clear_old_backup_key_word_list:                          # 清除历史文件关键字列表
   - "txlog"

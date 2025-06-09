@@ -79,7 +79,7 @@ datacheck_cron_register: no
 mon_cron_register: yes
 counter_fetch_cron_register: yes
 counter_distribute_cron_register: yes
-csdc_cron_register: no
+csdc_cron_register: yes
 sse_cron_register: yes
 szse_cron_register:  yes
 sse_late_cron_register:  no
@@ -194,6 +194,8 @@ mon_cp_files:                                          # mon 拷贝列表， nam
   - "CrdCustMaintenanceParams.csv"
   - "CustTradingLimits.csv"
   - "CustTgwBind.csv"
+  - "CrdShortSellDayTradingCtrl.csv"
+  - "MiddlePlatformSystemInfo.csv"
   - "SecurityAbnormalFluctuation.csv"
   - "StockFilingInfo.csv"
   - "MajorStockHolderRole.csv"
@@ -385,8 +387,8 @@ sse_late_check_files: []
 sse_cp_files:                                             # 上海产品文件拷贝列表， 支持正则
   - "cpxx0201{{ curr_date[4:] }}.txt"
   - "cpxx0202{{ curr_date[4:] }}.txt"
-  - "dbp{{ curr_date[4:] }}.txt"
   - "fjy{{ curr_date }}.txt"
+  - "dbp{{ curr_date[4:] }}.txt"
   - "gzlx.{{ gzlx_mm.stdout[:-1].lstrip('0') }}{{ curr_date[-2:] }}"
   - "bondinfo{{ curr_date }}.txt"
   - "bondinfo{{ curr_date }}.zip"
@@ -401,9 +403,9 @@ sse_etf_cp_files: []                                      # 上海etf产品文�
 #  - "*{{ curr_date[4:] }}2.ETF"
 
 sse_check_files:
-  - "fjy{{ curr_date }}.txt"
   - "cpxx0201{{ curr_date[4:] }}.txt"
   - "cpxx0202{{ curr_date[4:] }}.txt"
+  - "fjy{{ curr_date }}.txt"
   - "dbp{{ curr_date[4:] }}.txt"
   - "gzlx.{{ gzlx_mm.stdout[:-1].lstrip('0') }}{{ curr_date[-2:] }}"
   - "bondinfo{{ curr_date }}.txt"
@@ -458,7 +460,7 @@ szse_etf_check_files: []                                       # 深交所文件
 ############# szse 文件配置 #####################
 
 ################# 备份配置  #####################
-is_clear_old_backup_files: "no"                     # 是否启用清除指定的历史文件
+is_clear_old_backup_files: "no"                          # 是否启用清除指定的历史文件
 clear_old_backup_datas: 30                               # 指定的历史文件保留天数
 clear_old_backup_key_word_list:                          # 清除历史文件关键字列表
   - "txlog"
