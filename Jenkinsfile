@@ -2,15 +2,16 @@ pipeline {
     agent any
 
     parameters {
-        string(name: 'version', defaultValue: '1.0.0', description: '请输入版本号')
+        string(name: 'version', description: '请输入版本号')
     }
 
     stages {
         stage('Clone Repository') {
             steps {
                 // 从 Git 仓库拉取代码
-                git url: 'https://gitee.com/danqingzhao/jenkinslib.git',
-                     branch: 'main'  // 替换为你需要的分支
+                git url: 'https://gitee.com/danqingzhao/art.git',
+                credentialsId: 'gitee-repo',
+                branch: 'main'  // 替换为你需要的分支
             }
         }
 
