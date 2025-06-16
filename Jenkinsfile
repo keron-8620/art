@@ -34,7 +34,7 @@ pipeline {
                     sh "tar -czf ${tarFileName} *"
 
                     // 可选：将生成的 tar 文件移动到 Jenkins 用户根目录（假设路径是 /home/jenkins）
-                    sh "mv ${tarFileName} /home/jenkins/"
+                    sh "mv ${tarFileName} /var/lib/jenkins"
                 }
             }
         }
