@@ -11,7 +11,7 @@ pipeline {
                 // 从 Git 仓库拉取代码
                 git url: 'https://gitee.com/danqingzhao/art.git',
                 credentialsId: 'gitee-repo',
-                branch: 'main'  // 替换为你需要的分支
+                branch: 'master'  // 替换为你需要的分支
             }
         }
 
