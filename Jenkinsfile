@@ -74,7 +74,9 @@ pipeline {
         always {
             script {
                 // 保留 Jenkinsfile，删除其余所有 Git 拉取和构建生成的内容
-                sh "ls | grep -v '^Jenkinsfile$' | xargs rm -rf"
+                sh '''
+                    ls | grep -v '^Jenkinsfile$' | xargs rm -rf
+                '''
             }
             echo "已清理构建产物。"
         }
