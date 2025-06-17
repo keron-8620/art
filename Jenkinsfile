@@ -2,33 +2,38 @@ pipeline {
     agent any
 
     parameters {
-        string(name: 'version', description: '请输入版本号')
+        // string(name: 'version', description: '请输入版本号')
+        string(name: 'tarFile', description: '请输入打包的文件名')
+    }
+
+    options {
+        timestamps() // 日志显示时间戳
+        skipDefaultCheckout() // 删除隐式checkout scm语句
+        timeout(time: 1, unit: 'MINUTES') // 设置超时时间
+        disableConcurrentBuilds() // 禁用并发构建
     }
 
     stages {
-        stage('Clone Repository') {
+        stage('从Git仓库拉取代码') {
             steps {
-                // 从 Git 仓库拉取代码
                 git url: 'https://gitee.com/danqingzhao/art.git',
-                credentialsId: 'gitee-repo',
+                credentialsId: 'git-repo',
                 branch: 'master'  // 替换为你需要的分支
             }
         }
 
-        stage('Create Logs Directory') {
+        stage('将程序打包') {
             steps {
                 script {
                     // 在项目根目录下创建 logs 文件夹
                     sh 'mkdir -p logs'
-                }
-            }
-        }
 
-        stage('Archive Project as Tar') {
-            steps {
-                script {
                     // 使用传入的版本号构建文件名
-                    def tarFileName = "art-${params.version}.tar.gz"
+                    def tarFileName = "${params.tarFile}"
+
+                    if (!tarFileName =~ /(?i)\.tar\.gz$/) {
+                        tarFileName = "${tarFileName}.tar.gz"
+                    }
                     
                     // 打包当前目录为 tar.gz
                     sh "tar -czf ${tarFileName} *"

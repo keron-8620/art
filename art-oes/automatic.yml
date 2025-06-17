@@ -353,8 +353,8 @@ sse_check_files:
 sse_etf_check_mon_files: yes                              # 是否校验mon维护的上海etf文件
 sse_etf_check_counter_files: no                           # 是否校验主柜维护的上海etf文件
 sse_etf_check_files:                                      # 上交所获取etf文件检查列表
-  - "(510050{{ curr_date[4:] }}2.(?i)ETF|50__{{ curr_date[4:] }}.(?i)ETF)"
-  - "(510300{{ curr_date[4:] }}2.(?i)ETF|510300{{ curr_date[4:] }}.(?i)ETF)"
+  - "(?:510050{{ curr_date[4:] }}2\.|50__{{ curr_date[4:] }}\.)ETF"
+  - "(?:510300{{ curr_date[4:] }}2?\.))ETF"
 ############### sse 文件配置 ####################
 
 ############# szse 文件配置 #####################
