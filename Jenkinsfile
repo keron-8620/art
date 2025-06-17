@@ -40,6 +40,7 @@ pipeline {
 
                     // 可选：将生成的 tar 文件移动到 Jenkins 用户根目录（假设路径是 /home/jenkins）
                     sh "mv ${tarFileName} /var/lib/jenkins"
+                    // sh "scp ${tarFileName} root@192.168.11.54:/vagrant/remotepackage/art/art/${Version}/"
                 }
             }
         }
