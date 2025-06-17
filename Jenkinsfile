@@ -39,7 +39,7 @@ pipeline {
                     def tarFileName = "${params.tarFile}"
                     
                     // 打包当前目录为 tar.gz
-                    sh "tar -czf ${tarFileName} *"
+                    sh "tar -czf ${tarFileName} * --exclude=${tarFileName}"
                 }
             }
         }
@@ -71,8 +71,15 @@ pipeline {
     }
 
     post {
+        always {
+            script {
+                // 保留 Jenkinsfile，删除其余所有 Git 拉取和构建生成的内容
+                sh "ls | grep -v '^Jenkinsfile$' | xargs rm -rf"
+            }
+            echo "已清理构建产物。"
+        }
         success {
-            echo "构建成功，项目已打包为 tar 并保存到 Jenkins 用户根目录。"
+            echo "构建成功。"
         }
         failure {
             echo "构建失败，请检查日志。"
