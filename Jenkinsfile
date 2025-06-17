@@ -1,9 +1,13 @@
 pipeline {
-    agent any
+    agent {
+        node {
+            label: 'art'
+        }
+    }
 
     parameters {
-        // string(name: 'version', description: '请输入版本号')
-        string(name: 'tarFile', description: '请输入打包的文件名')
+        // string(name: 'version', description: '版本号')
+        string(name: 'tarFile', description: '打包的文件名')
     }
 
     options {
@@ -13,11 +17,6 @@ pipeline {
     }
 
     stages {
-        // stage('从Git仓库拉取代码') {
-        //     steps {
-        //         checkout scm
-        //     }
-        // }
 
         stage('将程序打包') {
             steps {
@@ -32,9 +31,7 @@ pipeline {
                     // 打包当前目录为 tar.gz
                     sh "tar -czf ${tarFileName} *"
 
-                    // 可选：将生成的 tar 文件移动到 Jenkins 用户根目录（假设路径是 /home/jenkins）
-                    sh "mv ${tarFileName} /var/lib/jenkins"
-                    // sh "scp ${tarFileName} root@192.168.11.54:/vagrant/remotepackage/art/art/${Version}/"
+                    sh "pwd"
                 }
             }
         }
