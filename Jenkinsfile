@@ -5,8 +5,19 @@ pipeline {
         }
     }
 
+    environment {
+        // 远程服务器地址
+        DEPLOY_SERVER_IP = '192.168.11.54'
+        
+        // 远程服务器部署路径
+        DEPLOY_PATH = '/vagrant/remotepackage/art/art'
+        
+        // SSH 凭据 ID
+        SSH_CREDENTIALS_ID = 'ssh-warehouse-key' 
+    }
+
     parameters {
-        // string(name: 'version', description: '版本号')
+        string(name: 'version', description: '大版本号')
         string(name: 'tarFile', description: '打包的文件名')
     }
 
@@ -17,8 +28,7 @@ pipeline {
     }
 
     stages {
-
-        stage('将程序打包') {
+        stage('打包程序') {
             steps {
                 script {
                     // 在项目目录下创建 logs 文件夹
@@ -30,8 +40,31 @@ pipeline {
                     
                     // 打包当前目录为 tar.gz
                     sh "tar -czf ${tarFileName} *"
+                }
+            }
+        }
+        stage('上传成品库') {
+            steps {
+                script {
+                    def tarFileName = "${params.tarFile}"
+                    def remoteDir = "${env.DEPLOY_PATH}/${params.version}"
+                    def remoteFullPath = "${remoteDir}/${tarFileName}"
 
-                    sh "pwd"
+                    // 创建远程目录
+                    sshExec(
+                        host: env.DEPLOY_SERVER_IP,
+                        credentialsId: env.SSH_CREDENTIALS_ID,
+                        command: "mkdir -p ${remoteDir}"
+                    )
+
+                    // 上传文件
+                    sshPut(
+                        host: env.DEPLOY_SERVER_IP,
+                        credentialsId: env.SSH_CREDENTIALS_ID,
+                        files: [
+                            [from: tarFileName, into: remoteFullPath]
+                        ]
+                    )
                 }
             }
         }
