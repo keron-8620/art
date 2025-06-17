@@ -8,32 +8,26 @@ pipeline {
 
     options {
         timestamps() // 日志显示时间戳
-        skipDefaultCheckout() // 删除隐式checkout scm语句
         timeout(time: 1, unit: 'MINUTES') // 设置超时时间
         disableConcurrentBuilds() // 禁用并发构建
     }
 
     stages {
-        stage('从Git仓库拉取代码') {
-            steps {
-                git url: 'https://gitee.com/danqingzhao/art.git',
-                credentialsId: 'git-repo',
-                branch: 'master'  // 替换为你需要的分支
-            }
-        }
+        // stage('从Git仓库拉取代码') {
+        //     steps {
+        //         checkout scm
+        //     }
+        // }
 
         stage('将程序打包') {
             steps {
                 script {
-                    // 在项目根目录下创建 logs 文件夹
-                    sh 'mkdir -p logs'
+                    // 在项目目录下创建 logs 文件夹
+                    sh 'mkdir -p art-oes/logs'
+                    sh 'mkdir -p art-mds/logs'
 
                     // 使用传入的版本号构建文件名
                     def tarFileName = "${params.tarFile}"
-
-                    if (!tarFileName =~ /(?i)\.tar\.gz$/) {
-                        tarFileName = "${tarFileName}.tar.gz"
-                    }
                     
                     // 打包当前目录为 tar.gz
                     sh "tar -czf ${tarFileName} *"
