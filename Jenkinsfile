@@ -39,7 +39,7 @@ pipeline {
                     def tarFileName = "${params.tarFile}"
                     
                     // 打包当前目录为 tar.gz
-                    sh "tar -czf ${tarFileName} * --exclude=${tarFileName}"
+                    sh "tar -czf ${tarFileName} --exclude=${tarFileName} ."
                 }
             }
         }
@@ -49,6 +49,9 @@ pipeline {
                     def tarFileName = "${params.tarFile}"
                     def remoteDir = "${env.DEPLOY_PATH}/${params.version}"
                     def remoteFullPath = "${remoteDir}/${tarFileName}"
+
+                    // 清理git相关信息
+                    sh "rm -rf .git .gitignore"
 
                     // 创建远程目录
                     sshExec(
