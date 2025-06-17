@@ -17,7 +17,7 @@ pipeline {
     }
 
     parameters {
-        string(name: 'version', description: '大版本号')
+        string(name: 'version', default: '0.16.0', description: '大版本号')
         string(name: 'tarFile', description: '打包的文件名')
     }
 
