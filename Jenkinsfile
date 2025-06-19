@@ -55,7 +55,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('上传成品库') {
             steps {
                 script {
@@ -65,13 +65,12 @@ pipeline {
 
                     withCredentials([usernamePassword(
                         credentialsId: env.SSH_CREDENTIALS_ID,
-                        usernameVariable: 'SSH_USER',
-                        passwordVariable: 'SSH_PASS'
+                        keyFileVariable: 'SSH_KEY',
+                        usernameVariable: 'SSH_USER'
                     )]) {
                         sh """
-                            # 使用 sshpass 实现 scp/ssh
-                            sshpass -p '\$SSH_PASS' ssh \${SSH_USER}@\${DEPLOY_SERVER_IP} "mkdir -p ${remoteDir}"
-                            sshpass -p '\$SSH_PASS' scp ${tarFileName} \${SSH_USER}@\${DEPLOY_SERVER_IP}:${remoteFullPath}
+                            ssh -i \${SSH_KEY} \${SSH_USER}@\${DEPLOY_SERVER_IP} "mkdir -p ${remoteDir}"
+                            scp -i \${SSH_KEY} ${tarFileName} \${SSH_USER}@\${DEPLOY_SERVER_IP}:${remoteFullPath}
                         """
                     }
                 }
