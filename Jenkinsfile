@@ -63,10 +63,10 @@ pipeline {
                     def remoteDir = "${env.DEPLOY_PATH}/${params.version}"
                     def remoteFullPath = "${remoteDir}/${tarFileName}"
 
-                    withCredentials([usernamePassword(
+                    withCredentials([sshUserPrivateKey(
                         credentialsId: env.SSH_CREDENTIALS_ID,
-                        keyFileVariable: 'SSH_KEY',
-                        usernameVariable: 'SSH_USER'
+                        usernameVariable: 'SSH_USER',
+                        keyFileVariable: 'SSH_KEY'
                     )]) {
                         sh """
                             ssh -i \${SSH_KEY} \${SSH_USER}@\${DEPLOY_SERVER_IP} "mkdir -p ${remoteDir}"
