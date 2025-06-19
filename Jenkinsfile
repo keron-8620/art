@@ -50,24 +50,17 @@ pipeline {
                     def remoteDir = "${env.DEPLOY_PATH}/${params.version}"
                     def remoteFullPath = "${remoteDir}/${tarFileName}"
 
-                    // 清理git相关信息
-                    sh "rm -rf .git .gitignore"
-
-                    // 创建远程目录
-                    sshExec(
-                        host: env.DEPLOY_SERVER_IP,
+                    withCredentials([sshUserPrivateKey(
                         credentialsId: env.SSH_CREDENTIALS_ID,
-                        command: "mkdir -p ${remoteDir}"
-                    )
-
-                    // 上传文件
-                    sshPut(
-                        host: env.DEPLOY_SERVER_IP,
-                        credentialsId: env.SSH_CREDENTIALS_ID,
-                        files: [
-                            [from: tarFileName, into: remoteFullPath]
-                        ]
-                    )
+                        keyFileVariable: 'SSH_KEY',
+                        usernameVariable: 'SSH_USER'
+                    )]) {
+                        sh """
+                            rm -rf .git .gitignore
+                            ssh -i \$SSH_KEY \${SSH_USER}@\${DEPLOY_SERVER_IP} "mkdir -p ${remoteDir}"
+                            scp -i \$SSH_KEY ${tarFileName} \${SSH_USER}@\${DEPLOY_SERVER_IP}:${remoteFullPath}
+                        """
+                    }
                 }
             }
         }
