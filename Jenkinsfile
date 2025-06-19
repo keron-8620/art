@@ -31,18 +31,31 @@ pipeline {
         stage('打包程序') {
             steps {
                 script {
-                    // 在项目目录下创建 logs 文件夹
-                    sh 'mkdir -p art-oes/logs'
-                    sh 'mkdir -p art-mds/logs'
-
-                    // 使用传入的版本号构建文件名
                     def tarFileName = "${params.tarFile}"
+                    def tempDir = "/tmp/art-build-${env.BUILD_NUMBER}"
 
-                    // 打包当前目录为 tar.gz
-                    sh "tar -czf ${tarFileName} --exclude=${tarFileName} ."
+                    // 删除 .git 等文件
+                    sh 'rm -rf .git .gitignore'
+
+                    // 创建 logs 目录结构
+                    sh 'mkdir -p art-oes/logs art-mds/logs'
+
+                    // 创建临时目录并复制内容
+                    sh "mkdir -p ${tempDir}"
+                    sh "cp -r * ${tempDir}/"
+
+                    // 打包临时目录内容
+                    sh "cd ${tempDir} && tar -czf ${tarFileName} *"
+
+                    // 将生成的 tar.gz 移回当前目录
+                    sh "mv ${tempDir}/${tarFileName} ."
+
+                    // 清理临时目录
+                    sh "rm -rf ${tempDir}"
                 }
             }
         }
+        
         stage('上传成品库') {
             steps {
                 script {
@@ -50,15 +63,15 @@ pipeline {
                     def remoteDir = "${env.DEPLOY_PATH}/${params.version}"
                     def remoteFullPath = "${remoteDir}/${tarFileName}"
 
-                    withCredentials([sshUserPrivateKey(
+                    withCredentials([usernamePassword(
                         credentialsId: env.SSH_CREDENTIALS_ID,
-                        keyFileVariable: 'SSH_KEY',
-                        usernameVariable: 'SSH_USER'
+                        usernameVariable: 'SSH_USER',
+                        passwordVariable: 'SSH_PASS'
                     )]) {
                         sh """
-                            rm -rf .git .gitignore
-                            ssh -i \$SSH_KEY \${SSH_USER}@\${DEPLOY_SERVER_IP} "mkdir -p ${remoteDir}"
-                            scp -i \$SSH_KEY ${tarFileName} \${SSH_USER}@\${DEPLOY_SERVER_IP}:${remoteFullPath}
+                            # 使用 sshpass 实现 scp/ssh
+                            sshpass -p '\$SSH_PASS' ssh \${SSH_USER}@\${DEPLOY_SERVER_IP} "mkdir -p ${remoteDir}"
+                            sshpass -p '\$SSH_PASS' scp ${tarFileName} \${SSH_USER}@\${DEPLOY_SERVER_IP}:${remoteFullPath}
                         """
                     }
                 }
