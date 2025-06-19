@@ -37,7 +37,7 @@ pipeline {
 
                     // 使用传入的版本号构建文件名
                     def tarFileName = "${params.tarFile}"
-                    
+
                     // 打包当前目录为 tar.gz
                     sh "tar -czf ${tarFileName} --exclude=${tarFileName} ."
                 }
