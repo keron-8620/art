@@ -45,8 +45,8 @@ class WatchSystemPath:
 
     def mds(self):
         data_dir = os.path.join(self.local_path, 'data')
-        txlog_dir = os.path.join(self.local_path, 'txlog')
-        return [data_dir, txlog_dir]
+        # txlog_dir = os.path.join(self.local_path, 'txlog')
+        return [data_dir]
 
     def get_watch_dirs(self, systemid):
         handler = getattr(self, systemid)
