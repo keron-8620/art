@@ -19,11 +19,11 @@
   ignore_errors: yes
 
 - name: send clientinfo file to umds
-  command: python3 run_command.py "rsync -az --no-r -e 'ssh -p {{ ssh_port }}' {{ ansible_path_files_mon }}/{{ item }} {{ umon_user }}@{{ umon_host }}:{{ umon_deploy_path }}/"
+  command: python3 run_command.py "rsync -az --no-r -e 'ssh -p {{ ssh_port }}' {{ ansible_path_files_mon }}/{{ item }} {{ umds_user }}@{{ umds_host }}:{{ umds_deploy_path }}/"
   args:
     chdir: "{{ ansible_path_scripts_files }}"
-  with_items: "{{ umon_cp_files_list }}"
-  when: umon_enable == true
+  with_items: "{{ umds_cp_files_list }}"
+  when: umds_enable == true
   delegate_to: 127.0.0.1
   run_once: yes
   ignore_errors: yes

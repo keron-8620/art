@@ -78,8 +78,8 @@ sse_user: *user
 sse_host: *host
 szse_user: *user
 szse_host: *host
-umon_user: root
-umon_host: *host
+umds_user: root
+umds_host: *host
 ##################### 远程用户设置 ##################
 
 ################## conf获取 相关 ###############
@@ -118,12 +118,12 @@ mon_check_files_list:
 
 ###################### mon设置 #################
 
-###################### umon设置 #################
-umon_enable: true
-umon_cp_files_list:
+###################### umds设置 #################
+umds_enable: true
+umds_cp_files_list:
   - "ClientInfo.csv"
-umon_deploy_path: "/root/fpga/xilinx_client_demo"
-###################### umon设置 #################
+umds_deploy_path: "/root/fpga/xilinx_client_demo"
+###################### umds设置 #################
 
 ###################### sse设置 #################
 gateway_path_root_sse: /mnt/quant360/import/sse
