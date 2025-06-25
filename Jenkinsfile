@@ -4,21 +4,25 @@ pipeline {
             label 'localhost'
         }
     }
+    triggers {
+        GenericTrigger(
+            genericVariables: [[key: 'ref', value: '$.ref', regexpFilter: '']],
+            token: 'art',
+            tokenCredentialId: '',
+            regexpFilterText: '$.ref',
+            regexpFilterExpression: ''
+        )
+    }
 
     environment {
         // 远程服务器地址
         DEPLOY_SERVER_IP = '192.168.11.54'
         
         // 远程服务器部署路径
-        DEPLOY_PATH = '/vagrant/remotepackage/art/art'
+        DEPLOY_PATH = '/vagrant/remotepackage/art'
         
         // SSH 凭据 ID
         SSH_CREDENTIALS_ID = 'ssh-warehouse-key' 
-    }
-
-    parameters {
-        string(name: 'version', defaultValue: '0.16.0', description: '大版本号')
-        string(name: 'tarFile', description: '打包的文件名')
     }
 
     options {
@@ -28,10 +32,17 @@ pipeline {
     }
 
     stages {
+        stage('获取版本号') {
+            steps {
+                script {
+                    env.version = "${env.ref}".substring("refs/tags/".length())
+                }
+            }
+        }
         stage('打包程序') {
             steps {
                 script {
-                    def tarFileName = "${params.tarFile}"
+                    def tarFileName = "art-${env.version}.tar.gz"
                     def tempDir = "/tmp/art-build-${env.BUILD_NUMBER}"
 
                     // 删除 .git 等文件
@@ -59,8 +70,9 @@ pipeline {
         stage('上传成品库') {
             steps {
                 script {
-                    def tarFileName = "${params.tarFile}"
-                    def remoteDir = "${env.DEPLOY_PATH}/${params.version}"
+                    def tarFileName = "art-${env.version}.tar.gz"
+                    def parts = "${version}".split("\\.")
+                    def remoteDir = "${env.DEPLOY_PATH}/${parts[0..2].join(".")}"
                     def remoteFullPath = "${remoteDir}/${tarFileName}"
 
                     withCredentials([sshUserPrivateKey(
