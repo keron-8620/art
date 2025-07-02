@@ -155,7 +155,7 @@ sse_check_files_list:
 ###################### szse设置 ################
 gateway_path_root_szse: /mnt/quant360/import/szse
 szse_start_hour: "07"
-szse_start_minute: "30"
+szse_start_minute: "36"
 szse_cp_files_list:
   - "cashauctionparams_{{ curr_date }}.xml"
   - "securities_{{ curr_date }}.xml"
