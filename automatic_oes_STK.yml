@@ -362,7 +362,7 @@ gateway_path_root_exchange_szse: /mnt/quant360/import/szse  # 深交所股票获
 gateway_path_root_exchange_szse_etf: /mnt/quant360/import/szse  # 深交所etf文件获取文件网关目录
 
 szse_start_hour: "07"                                       # 深交所文件获取开始时间
-szse_start_minute: "30"
+szse_start_minute: "36"
 
 szse_late_start_hour: "08"                                  # 深交所担保品文件获取开始时间
 szse_late_start_minute: "40"
