@@ -2,7 +2,7 @@
 
 - name: register all tasks
   cron:
-    name: "{{ item.name }}--{{ swf_system_version }}-{{ set_num }}  {{ item.ch_name }}"
+    name: "{{ item.name }}--{{ set_num }}  {{ item.ch_name }}"
     minute: "{{ item.start_minute }}"
     hour: "{{ item.start_hour }}"
     day: "*"
@@ -28,7 +28,7 @@
 
 - name: unregister the tasks which is not enable
   cron:
-    name: "{{ item.name }}--{{ swf_system_version }}-{{ set_num }}  {{ item.ch_name }}"
+    name: "{{ item.name }}--{{ set_num }}  {{ item.ch_name }}"
     state: absent
     user: "{{ job_run_user }}"
   when: not item.enable

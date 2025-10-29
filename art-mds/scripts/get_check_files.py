@@ -36,7 +36,8 @@ def get_etc_check_files(path: str):
                 print(spec_files[line.security_id])
                 sh_files.append(spec_files[line.security_id])
             sh_files.append(
-                f"({line.security_id}{{{{ curr_date[4:] }}}}.(?i)ETF|{line.security_id}{{{{ curr_date[4:] }}}}2.(?i)ETF)")
+                f"({line.security_id}{{{{ curr_date[4:] }}}}.(?i)ETF|{line.security_id}{{{{ curr_date[4:] }}}}2.(?i)ETF|ssepcf_{line.security_id}_{{{{ curr_date }}}}.xml)"
+            )
         elif int(line.market) == Market.sz_mkt.value:
             # pcf_159942_20180201.xml
             sz_files.append(f"pcf_{line.security_id}_{{{{ curr_date }}}}.xml")
