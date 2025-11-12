@@ -59,6 +59,7 @@ mon_zb_path: "/home/monuser/mon"                       # mon灾备机器环境�
 ##################### 定时任务 配置##################
 calendar_cron_register: yes
 mon_cron_register: yes
+bse_cron_register: yes
 sse_cron_register: yes
 szse_cron_register:  yes
 conf_cron_register: no
@@ -74,6 +75,8 @@ calendar_start_minute: "30"
 ##################### 远程用户设置 ##################
 mon_user: &user xxxx
 mon_host: &host xxxx
+bse_user: *user
+bse_host: *host
 sse_user: *user
 sse_host: *host
 szse_user: *user
@@ -124,6 +127,18 @@ umds_cp_files_list:
   - "ClientInfo.csv"
 umds_deploy_path: "/root/fpga/xilinx_client_demo"
 ###################### umds设置 #################
+
+###################### bse设置 #################
+gateway_path_root_bse: /mnt/quant360/import/bse
+
+bse_start_hour: "08"
+bse_start_minute: "02"
+bse_cp_files_list:
+  - "NQXX.DBF"
+
+bse_check_files_list:
+  - "NQXX.DBF"
+###################### sse设置 #################
 
 ###################### sse设置 #################
 gateway_path_root_sse: /mnt/quant360/import/sse
@@ -227,6 +242,7 @@ monlog_module: "art"
 # 定时任务设置为关闭，脚本可以正常执行 ，不会再注册修改定时任务，已注册的计划任务正常生效
 
 disable_mon_collector: no
+disable_bse_collector: no
 disable_sse_collector: no
 disable_szse_collector: no
 disable_mds_nakedstart: no
@@ -241,12 +257,14 @@ disable_mds_backup: no
 
 ################# 可选控制  #####################
 mon_end_time: *end_time
+bse_end_time: *end_time
 sse_end_time: *end_time
 szse_end_time: *end_time
 load_end_time: *end_time
 conf_end_time: *end_time
 
 mon_run_once: no
+bse_run_once: no
 sse_run_once: no
 conf_run_once: no
 szse_run_once: no
