@@ -1,0 +1,41 @@
+---
+
+- name: check bse files ready
+  find:
+    paths: "{{ slave_path_oes_home_data_exchange }}"
+    get_checksum: yes
+    file_type: file
+    use_regex: yes
+    patterns: "{{ item }}"
+  with_items: "{{ bse_check_files }}"
+  register: find_res
+
+- name: print bse files ready
+  debug:
+    msg: "file ==> {{ item.item }} | matched ==> {{ item.matched }}"
+  failed_when: "item.matched == 0"
+  with_items: "{{ find_res.results }}"
+  loop_control:
+    label: "{{ item.item }}"
+  ignore_errors: yes
+  register: bse_security_files_check_result
+
+- name: send bse files ready to mon
+  command: "{{ python3 }} mon_log.py -c 'no such file: {{ item.item }}' >> /dev/null"
+  args:
+    chdir: "{{ ansible_path_scripts_files }}"
+  when: "item.matched == 0"
+  with_items: "{{ find_res.results }}"
+  loop_control:
+    label: "{{ item.item }}"
+  delegate_to: 127.0.0.1
+  ignore_errors: yes
+  run_once: yes
+
+- name: register check result
+  debug:
+    msg: "register check result"
+  failed_when: "bse_security_files_check_result is failed"
+  register: check_result
+  run_once: yes
+  ignore_errors: yes

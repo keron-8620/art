@@ -1,0 +1,15 @@
+---
+cron_job_name: "{{ get_bse_name }}"
+cron_chinese_name: "{{ get_bse_ch_name }}"
+cron_job_start_hour: "{{ bse_start_hour }}"
+cron_job_start_minute: "{{ bse_start_minute }}"
+cron_job_action: "{{ get_bse_action }}"
+
+running_cmd: "./oes taskstatus -k DATA_FETCH_BSE -S 2"
+success_cmd: "./oes taskstatus -k DATA_FETCH_BSE -S 5 -m ''"
+failed_cmd: "./oes taskstatus -k DATA_FETCH_BSE -S 4 -m '获取数据失败, {{cron_job_cycles}}分钟后尝试重新拉取数据'"
+timeout_cmd: "./oes taskstatus -k DATA_FETCH_BSE -S 4 -m '获取数据失败, 需人工干预'"
+
+task_end_time: "{{ bse_end_time }}"
+fetch_ok_flag: "{{ fetch_bse_ok }}"
+art_run_once: "{{ bse_run_once }}"

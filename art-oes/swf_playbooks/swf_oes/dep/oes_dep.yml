@@ -16,6 +16,7 @@
     path: "{{ item }}"
     state: directory
   with_items:
+    - "{{ ansible_path_files_exchange_bse }}"
     - "{{ ansible_path_files_exchange_sse }}"
     - "{{ ansible_path_files_exchange_sse_etf }}"
     - "{{ ansible_path_files_exchange_szse }}"

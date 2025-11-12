@@ -1,0 +1,29 @@
+---
+- name: site oes fetch bse running
+  command: "./oes taskstatus -k  DATA_FETCH_BSE -S 2"
+  args:
+    chdir: "{{ slave_path_oes_home_bin }}"
+  when: set_oes_status
+  ignore_errors: True
+
+- name: remove OK flag file
+  file:
+    path: "{{ slave_path_oes_home_data_flags }}/{{ item }}"
+    state: absent
+  with_items:
+    - "{{ fetch_bse_ok }}"
+  ignore_errors: yes
+
+- name: clear bse directory
+  shell: "cd {{ ansible_path_files_exchange_bse }} && rm -rf *"
+  delegate_to: 127.0.0.1
+  run_once: true
+
+- name: fetch remote bse file
+  shell: python3 run_command.py "rsync -az --no-r -e 'ssh -p {{ ssh_port }}' {{ bse_user }}@{{ bse_host }}:{{ gateway_path_root_exchange_bse }}/{{ item }} {{ ansible_path_files_exchange_bse }}/"
+  args:
+    chdir: "{{ ansible_path_scripts_files }}"
+  with_items: "{{ bse_cp_files }}"
+  ignore_errors: yes
+  delegate_to: 127.0.0.1
+  run_once: yes

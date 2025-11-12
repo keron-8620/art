@@ -1,0 +1,10 @@
+---
+
+- name: send bse security files
+  synchronize:
+    src: "{{ ansible_path_files_exchange_bse }}/"
+    dest: "{{ slave_path_oes_home_data_exchange }}"
+    checksum: yes
+  register: collector_bse_files_result
+  ignore_errors: yes
+

@@ -12,6 +12,7 @@
   - "{{ ansible_path_files_config }}/{{ se }}"
   - "{{ cfg_file_src_all }}"
   - "{{ ansible_path_files_mon }}"
+  - "{{ ansible_path_files_bse }}"
   - "{{ ansible_path_files_sse }}"
   - "{{ ansible_path_files_szse }}"
   - "{{ ansible_path_files_conf }}"

@@ -65,6 +65,8 @@ mon_user: xxxx                                         # 访问mon文件用户
 mon_host: xxxx                                         # mon所在主机ip
 csdc_user: &user xxxx                                  # csdc主机用户
 csdc_host: &host xxxx                                  # csdc主机ip
+bse_user: *user                                        # bse 主机用户
+bse_host: *host                                        # bse 主机ip
 sse_user: *user                                        # sse 主机用户
 sse_host: *host                                        # sse 主机ip
 szse_user: *user                                       # szse 主机用户
@@ -80,6 +82,7 @@ mon_cron_register: yes
 counter_fetch_cron_register: yes
 counter_distribute_cron_register: yes
 csdc_cron_register: yes
+bse_cron_register: yes
 sse_cron_register: yes
 szse_cron_register:  yes
 sse_late_cron_register:  no
@@ -309,6 +312,19 @@ csdc_check_files:                                         # 中登清算文件�
 
 ################ csdc 文件配置 ##################
 
+############### bse 文件配置 ####################
+gateway_path_root_exchange_bse: /mnt/quant360/import/bse  # 上交所股票文件获取文件网关目录
+
+bse_start_hour: "08"                                      # 上交所上场数据获取时间
+bse_start_minute: "02"
+
+bse_cp_files:                                             # 上交所产品文件拷贝列表， 支持正则
+  - "NQXX.DBF"
+
+bse_check_files:                                          # 上交所产品文件检查列表
+  - "NQXX.DBF"
+############### bse 文件配置 ####################
+
 ############### sse 文件配置 ####################
 gateway_path_root_exchange_sse: /mnt/quant360/import/sse  # 上交所股票文件获取文件网关目录
 gateway_path_root_exchange_sse_etf: /mnt/quant360/import/sse  # 上海etf文件获取文件网关目录
@@ -446,6 +462,7 @@ disable_mon_collector: no
 disable_csdc_collector: no
 disable_counter_fetch: no
 disable_counter_distribute: no
+disable_bse_collector: no
 disable_sse_collector: no
 disable_szse_collector: no
 disable_sse_late_collector: no
@@ -467,6 +484,7 @@ mon_end_time: *end_time
 counter_fetch_end_time: *end_time
 counter_distribute_end_time: *end_time
 csdc_end_time: *end_time
+bse_end_time: *end_time
 sse_end_time: *end_time
 szse_end_time: *end_time
 sse_late_end_time: *end_time
@@ -478,6 +496,7 @@ mon_run_once: no
 counter_fetch_run_once: yes
 counter_distribute_run_once: yes
 csdc_run_once: no
+bse_run_once: no
 sse_run_once: no
 szse_run_once: no
 sse_late_run_once: no
