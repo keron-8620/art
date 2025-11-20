@@ -138,7 +138,7 @@ bse_cp_files_list:
 
 bse_check_files_list:
   - "NQXX.DBF"
-###################### sse设置 #################
+###################### bse设置 #################
 
 ###################### sse设置 #################
 gateway_path_root_sse: /mnt/quant360/import/sse
