@@ -1,6 +1,6 @@
 version_info:
     "name": "art"
-    "version": "0.16.0.3.50-release"
+    "version": "0.16.0.3.50_u1-release"
     "update_time": "202501120"
     "config_file": "automatic.yml"
     "ansible_config_file": 'ansible.cfg'

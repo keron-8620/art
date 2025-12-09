@@ -82,7 +82,7 @@ mon_cron_register: yes
 counter_fetch_cron_register: yes
 counter_distribute_cron_register: yes
 csdc_cron_register: yes
-bse_cron_register: yes
+bse_cron_register: no
 sse_cron_register: yes
 szse_cron_register:  yes
 sse_late_cron_register:  no
@@ -151,8 +151,8 @@ conf_check_files:                                         # conf 任务检查列
 ################# mon 相关配置 ##################
 mon_deploy_path: /home/monuser/mon                     # mon部署目录
 gateway_path_root_mon: /mnt/quant360/import/mon/oes/01 # mon文件网管目录
-mon_start_hour: "07"                                   # mon文件获取开始时间
-mon_start_minute: "20"
+mon_start_hour: "05"                                   # mon文件获取开始时间
+mon_start_minute: "30"
 
 mon_cp_files:                                          # mon 拷贝列表， name 支持使用正则
   - "ClientInfo.csv"
@@ -462,7 +462,7 @@ disable_mon_collector: no
 disable_csdc_collector: no
 disable_counter_fetch: no
 disable_counter_distribute: no
-disable_bse_collector: no
+disable_bse_collector: yes
 disable_sse_collector: no
 disable_szse_collector: no
 disable_sse_late_collector: no
