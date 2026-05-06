@@ -120,4 +120,9 @@
   delegate_to: 127.0.0.1
   run_once: true
 
-
+- name: unzip csdc files ready
+  command: "{{ python3 }} unzip_sse_files.py {{ ansible_path_files_csdc }}"
+  args:
+    chdir: "{{ ansible_path_scripts_files }}"
+  delegate_to: 127.0.0.1
+  run_once: yes
