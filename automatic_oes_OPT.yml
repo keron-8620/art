@@ -182,6 +182,7 @@ mon_cp_files:                                          # mon 拷贝列表， nam
   - "PbuInfo.csv"
   - "UpgradeInfo.conf"
   - "CustTgwBind.csv"
+  - "AgwIpFilter_.*.csv"
   - "MiddlePlatformSystemInfo.csv"
 
 mon_cp_to_conf_files:                                  # mon 拷贝至conf目录下列表， name 支持使用正则

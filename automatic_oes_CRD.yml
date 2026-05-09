@@ -197,6 +197,7 @@ mon_cp_files:                                          # mon 拷贝列表， nam
   - "CrdCustMaintenanceParams.csv"
   - "CustTradingLimits.csv"
   - "CustTgwBind.csv"
+  - "AgwIpFilter_.*.csv"
   - "CrdCompactTradeLimitsRule.csv"
   - "CrdShortSellDayTradingCtrl.csv"
   - "MiddlePlatformSystemInfo.csv"
@@ -354,6 +355,8 @@ csdc_start_minute: "35"
 # 文件从远程目录拷贝过来时， 支持正则
 csdc_cp_files:
   - name: "ipogh.*.txt"
+    se: "sh"
+  - name: "ipogh.*.zip"
     se: "sh"
     from_way: "dir"
   - name: "zqy.*.dbf"
