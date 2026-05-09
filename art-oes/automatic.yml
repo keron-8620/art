@@ -295,6 +295,7 @@ csdc_start_minute: "35"
 csdc_cp_files:
   - name: "ipogh.*.txt"
     se: "sh"
+    from_way: "dir"
   - name: "ipogh.*.zip"
     se: "sh"
     from_way: "dir"
